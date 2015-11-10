@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="38dp">
+    <TextView
+        android:id="@+id/press_to_talk"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="按住说话"
+        android:textColor="#999999"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/chat_send_btn"/>
+</LinearLayout>

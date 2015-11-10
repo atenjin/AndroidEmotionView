@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/input_container"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#cfcfcf" />
+
+    <LinearLayout
+        android:id="@+id/chat_button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#f2f2ef"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <com.king.chatview.widgets.OnlyView
+            android:id="@+id/button_1"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/voice_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/chatting_setmode_voice_btn_selector"
+                android:gravity="center"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/voice2chat_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/chatting_setmode_keyboard_btn_selector"
+                android:gravity="center"
+                android:visibility="gone" />
+        </com.king.chatview.widgets.OnlyView>
+
+        <com.king.chatview.widgets.OnlyView
+            android:id="@+id/voice_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="2dp">
+
+            <FrameLayout
+                android:id="@+id/voice_press_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"></FrameLayout>
+
+            <EditText
+                android:id="@+id/id_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/chat_editbox_background"
+                android:cursorVisible="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:maxLines="2"
+                android:padding="7dp"
+                style="@null"
+                android:textColor="#ff000000" />
+        </com.king.chatview.widgets.OnlyView>
+
+        <com.king.chatview.widgets.OnlyView
+            android:id="@+id/button_2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/emoji_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/emoji_select_btn_selector"
+                android:gravity="center"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/emoji2chat_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/chatting_setmode_keyboard_btn_selector"
+                android:gravity="center"
+                android:visibility="gone" />
+        </com.king.chatview.widgets.OnlyView>
+
+        <com.king.chatview.widgets.OnlyView
+            android:id="@+id/button_3"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/send_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:gravity="center"
+                android:text="发送"
+                android:textColor="@color/primary_pink"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/send2tool_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/type_select_btn_selector"
+                android:gravity="center"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/send2toolOn_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/type_select_btn_pressed"
+                android:gravity="center"
+                android:visibility="gone" />
+        </com.king.chatview.widgets.OnlyView>
+    </LinearLayout>
+
+    <com.king.chatview.widgets.OnlyView
+        android:id="@+id/box_view"
+        android:layout_width="match_parent"
+        android:layout_height="230dip"
+        android:gravity="center"
+        android:background="#ebebeb"
+        android:visibility="gone">
+
+        <com.king.chatview.widgets.ChatToolBox
+            android:id="@+id/chat_tool_box"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/primary_white"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/emotionLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+            <android.support.v4.view.ViewPager
+                android:id="@+id/emotionViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="210dp" />
+
+            <com.king.chatview.widgets.CustomIndicator
+                android:id="@+id/emotionIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
+
+    </com.king.chatview.widgets.OnlyView>
+</LinearLayout>

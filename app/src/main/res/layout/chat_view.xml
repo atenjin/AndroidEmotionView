@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.king.chatview.layout.KeyboardDetectorRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/chat_root">
+    <android.support.v7.widget.Toolbar
+        android:id="@android:id/title"
+        android:layout_width="match_parent"
+        android:layout_height="56dip"
+        android:background="@null" />
+    <RelativeLayout
+        android:layout_below="@android:id/title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/input_container"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical" />
+
+
+    </RelativeLayout>
+
+</com.king.chatview.layout.KeyboardDetectorRelativeLayout>

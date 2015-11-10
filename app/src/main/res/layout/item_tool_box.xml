@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/tool_bg"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:gravity="center"
+        >
+        <ImageView
+           android:background="@drawable/bg_toolbox"
+           android:id="@+id/tool_img"
+           android:layout_width="match_parent"
+          android:layout_height="match_parent"
+        />
+    </RelativeLayout>
+    
+    <TextView 
+        android:id="@+id/tool_text"
+        android:layout_below="@id/tool_bg"
+        android:layout_width="55dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="-2dp"
+        android:text="位置"
+        android:textColor="#aeaeae"
+        android:textSize="12sp"
+        android:gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+    />
+
+</RelativeLayout>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="200dp"
+    android:background="#000000"
+    android:alpha="0.6"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:orientation="vertical" >
+    
+    <RelativeLayout 
+        android:id="@+id/id_cancel_volumn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+        <ImageView 
+            android:id="@+id/id_voice_cancel_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/rcd_cancel_icon"
+            />
+
+        <TextView
+            android:padding="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/id_voice_cancel_hint"
+            android:gravity="center_horizontal"
+            android:text="松开手指，取消发送"
+            android:textColor="@android:color/white"
+            android:background="#ff0000" />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="200dp"
+    android:background="#000000"
+    android:alpha="0.6"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:orientation="vertical" >
+    
+    <RelativeLayout 
+        android:id="@+id/id_get_volumn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+        <ImageView 
+            android:id="@+id/id_voice_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/voice_rcd_hint"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/id_voice_hint"
+            android:gravity="center_horizontal"
+            android:text="手指上滑，取消发送"
+            android:textColor="@android:color/white" />
+
+        <ImageView
+            android:id="@+id/id_voice_amplitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/id_voice_hint"
+            android:layout_toRightOf="@+id/id_voice_hint"
+            android:src="@drawable/amp2" />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+
+    <color name="half_transparent">#e0000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="list_pressed">#e5e5e5</color>
+    <color name="citychange_titleline">#76C920</color>
+    <color name="tab_bg_select">#000000</color>
+    <color name="tab_indicator_bg">#d7d7d7</color>
+    <color name="tab_font_foucs">#84d748</color>
+    <color name="tab_font">#ffffff</color>
+    <color name="dlg_font">#666666</color>
+    <color name="category_grid_font">#4b4b4b</color>
+    <color name="list_seperator">#d6d6d6</color>
+    <color name="list_line">#C1C1B9</color>
+    <color name="base_green">#86CF2A</color>
+    <color name="light_green">#80d646</color>
+    <color name="highlight_green">#99e863</color>
+    <color name="talk_content_font">#707070</color>
+    <color name="tab_gap_color">#d3d3d3</color>
+    <color name="tab_footer">#fefefa</color>
+    <color name="font_title">#333333</color>
+    <color name="font_filter_bar">#7b7b7b</color>
+    <color name="bg_screen">#ffffff</color>
+    <color name="vad_meta_price">#e86e02</color>
+    <color name="vad_meta_label">#707070</color>
+    <color name="vad_meta_content">#333333</color>
+    <color name="vad_group_title">#86cf2a</color>
+    <color name="title_gap_line">#d3d3d3</color>
+    <color name="post_gap_line">#f5f5f5</color>
+    <color name="vad_call_btn_text">#ffffff</color>
+    <color name="vad_list_sub_info">#c8c8c8</color>
+
+    <!-- common color -->
+    <color name="common_black">#000000</color>
+    <color name="common_white">#ffffff</color>
+    <color name="common_placeholder">#808080</color>
+    <color name="common_edit_text_color">#333333</color>
+    <color name="common_button_text_color">#333333</color>
+    <color name="common_info">#d6d6d6</color>
+    <color name="common_button_disable">#adadad</color>
+    <color name="common_orange">#FA9A5B</color>
+    <color name="toast_info_bg">#D04B4B4B</color>
+
+    <color name="base_red">#EB320D</color>
+    <color name="balance">#fea82e</color>
+    <color name="list_selected">#d8eef4</color>
+    <color name="banner_back">#ff6f29</color>
+    <color name="transparent_grey">#aa000000</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="orange">#e5fe7700</color>
+    <color name="orange_pressed">#e5ff8f2c</color>
+    <!-- myzxing color -->
+    <color name="contents_text">#ff000000</color>
+    <color name="encode_view">#ffffffff</color>
+    <color name="possible_result_points">#c0ffbd21</color> <!-- Android standard ICS color -->
+    <color name="result_minor_text">#ffc0c0c0</color>
+    <color name="result_points">#c099cc00</color> <!-- Android standard ICS color -->
+    <color name="result_text">#ffffffff</color>
+    <color name="result_view">#b0000000</color>
+    <color name="status_text">#ffffffff</color>
+    <color name="viewfinder_laser">#ffcc0000</color> <!-- Android standard ICS color -->
+    <color name="viewfinder_mask">#60000000</color>
+    <color name="gray">#808080</color>
+    <color name="lightgreen">#99CC33</color>
+    <color name="green">#00CC00</color>
+
+    <!-- homepage color -->
+    <color name="homepage_background">#eaeef1</color>
+    <color name="text_gray">#999</color>
+    <color name="line">#e3e3e3</color>
+    <color name="text_dark_dark_gray">#333</color>
+    <color name="text_dark_gray">#666</color>
+    <color name="subscription_expand">#fafafa</color>
+    <color name="btn_down">#ffd6b2</color>
+
+
+    <!--white-->
+    <color name="primary_white">#ffffff</color>
+
+    <!--pink-->
+    <color name="primary_pink">#ff4466</color>
+    <color name="primary_pink_90">#e6ff4466</color>
+    <color name="primary_pink_85">#26ff4466</color>
+    <color name="light_pink">#fb4466</color>
+    <color name="primary_pink_dark">#df4466</color>
+    <color name="primary_pink_dark_90">#e6df4466</color>
+
+    <!--gray-->
+    <color name="light_gray">#f2f3ee</color>
+    <color name="xxlight_primary_gray">#f2f2ef</color>
+    <color name="xlight_primary_gray">#fbfbfb</color>
+    <color name="light_primary_gray">#e7e7e7</color>
+    <color name="little_light_primary_gray">#ebeaea</color>
+    <color name="primary_gray">#c8c8c5</color>
+    <color name="light_dark_gray">#cfcfcf</color>
+    <color name="xdark_primary_gray">#aeaeae</color>
+    <color name="xxdark_primary_gray">#676767</color>
+    <color name="xxxdark_primary_gray">#121212</color>
+    <!--black-->
+    <color name="primary_black">#333333</color>
+    <color name="light_primary_black">#626971</color>
+    <color name="transparent_black_80">#cc000000</color>
+
+    <!--divider-->
+    <color name="divider">#d0d0d0</color>
+
+    <!--green-->
+    <color name="primary_green">#4fe3c1</color>
+
+    <!--blue-->
+    <color name="primary_blue">#5F9BF8</color>
+
+    <!--purple-->
+    <color name="primary_purple">#2F2737</color>
+    <color name="dark_purple">#ff231b2b</color>
+
+    <!-- yellow -->
+    <color name="primary_yellow">#FFC333</color>
+</resources>
