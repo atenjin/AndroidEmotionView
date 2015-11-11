@@ -13,23 +13,28 @@ import android.widget.Toast;
 import com.king.chatview.layout.KeyboardDetectorRelativeLayout;
 import com.king.chatview.widgets.ChatToolBox;
 import com.king.chatview.widgets.InputChat;
+import com.king.chatview.widgets.NewInputChat;
 
 import java.io.File;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final String INPUT_CHAT_TAG = "input_chat";
-    InputChat inputChat;
+//    InputChat inputChat;
+    NewInputChat inputChat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.chat_view);
-        inputChat = new InputChat();
+        setContentView(R.layout.chat_view_new);
+//        inputChat = new InputChat();
+
+        inputChat = new NewInputChat();
+
         inputChat.addToolBoxData(new ToolAd());
 
         getSupportFragmentManager().beginTransaction().replace(R.id.input_container, inputChat, INPUT_CHAT_TAG).commit();
-        inputChat.setInputChatListener(new InputChat.InputChatListener() {
+        inputChat.setInputChatListener(new NewInputChat.InputChatListener() {
             @Override
             public void onSendMessage(String msg) {
                 Log.d("hehe", "sendMessage:" + msg);

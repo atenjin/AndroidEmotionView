@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:id="@+id/emotionLinearLayout"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+        <com.king.chatview.widgets.CustomIndicator
+            android:id="@+id/emotionIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center" />
+
+        <android.support.v4.view.ViewPager
+            android:layout_height="match_parent"
+            android:layout_above="@id/emotionIndicator"
+            android:id="@+id/emotionViewPager"
+            android:layout_width="match_parent"/>
+
+
+    </RelativeLayout>
+    <FrameLayout
+        android:id="@+id/stickers_slider_container"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:id="@+id/stickers_slider" >
+
+            </LinearLayout>
+        </HorizontalScrollView>
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <com.king.chatview.widgets.emotion.item.StickerItem
+                android:id="@+id/add_stickers"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+    </FrameLayout>
+</LinearLayout>

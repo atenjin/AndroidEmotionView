@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -24,6 +23,7 @@ import com.king.chatview.fragment.BaseFragment;
 import com.king.chatview.tools.DImenUtil;
 import com.king.chatview.utils.BundleArguments;
 import com.king.chatview.widgets.emotion.adapter.EmotionAdapter;
+import com.king.chatview.widgets.emotion.EmotionView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2015/11/10.
+ * Created by Administrator on 2015/11/11.
  */
-public class InputChat extends BaseFragment {
+public class NewInputChat extends BaseFragment {
     private static final int REQUEST_CODE_TAKE_PHOTO = 1;
     private static final int REQUEST_CODE_PICK_PHOTO = 2;
     private static final int REQUEST_CODE_CHOOSE_LOCATION = 3;
@@ -57,9 +57,9 @@ public class InputChat extends BaseFragment {
     protected ChatToolBox toolBox;
     protected VoicePress voicePress;
     protected View voiceView;
-    private LinearLayout emotionLinearLayout;
-    private ViewPager emotionViewPager;
-    private CustomIndicator emotionIndicator;
+//    private LinearLayout emotionLinearLayout;
+//    private ViewPager emotionViewPager;
+//    private CustomIndicator emotionIndicator;
 
     private EmotionAdapter emotionAdapter;
 
@@ -87,7 +87,7 @@ public class InputChat extends BaseFragment {
     }
 
     //this will be called at first, so we must make initial data there to avoid initial data being reset. !!!
-    public InputChat() {
+    public NewInputChat() {
         inputChatListener = null;
         items = new ArrayList<ChatToolBox.ChatToolItem>();
         items.add(new ToolPhoto());
@@ -115,17 +115,21 @@ public class InputChat extends BaseFragment {
         return boxViewHeight;
     }
 
+    private EmotionView emotionView;
+
     //this will be called when fragment called to show the view, this will be called after creatView().
     @Override
     protected View onInitializeView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = (LinearLayout) inflater.inflate(R.layout.inputchat, container, false);
+        rootView = (LinearLayout) inflater.inflate(R.layout.inputchat_new, container, false);
         buttonView = (LinearLayout) rootView.findViewById(R.id.chat_button);
         toolBox = (ChatToolBox) rootView.findViewById(R.id.chat_tool_box);
         boxView = (OnlyView) rootView.findViewById(R.id.box_view);
 
-        emotionLinearLayout = (LinearLayout) rootView.findViewById(R.id.emotionLinearLayout);
-        emotionViewPager = (ViewPager) rootView.findViewById(R.id.emotionViewPager);
-        emotionIndicator = (CustomIndicator) rootView.findViewById(R.id.emotionIndicator);
+//        emotionLinearLayout = (LinearLayout) rootView.findViewById(R.id.emotionLinearLayout);
+//        emotionViewPager = (ViewPager) rootView.findViewById(R.id.emotionViewPager);
+//        emotionIndicator = (CustomIndicator) rootView.findViewById(R.id.emotionIndicator);
+
+        emotionView = (EmotionView) rootView.findViewById(R.id.emotion_view);
 
         init();
         return rootView;
@@ -178,28 +182,28 @@ public class InputChat extends BaseFragment {
         editText.setCursorVisible(true);
 
         emotionAdapter = new EmotionAdapter(getAppContext(), editText);
-        emotionViewPager.setAdapter(emotionAdapter);
+//        emotionViewPager.setAdapter(emotionAdapter);
 
-        emotionIndicator.setDotCount(emotionAdapter.getCount());
-        emotionIndicator.setDotHeight(DImenUtil.dip2px(getAppContext(), 5));
-        emotionIndicator.setDotWidth(DImenUtil.dip2px(getAppContext(), 5));
-        emotionIndicator.setDotMargin(DImenUtil.dip2px(getAppContext(), 10));
-        emotionIndicator.show();
+//        emotionIndicator.setDotCount(emotionAdapter.getCount());
+//        emotionIndicator.setDotHeight(DImenUtil.dip2px(getAppContext(), 5));
+//        emotionIndicator.setDotWidth(DImenUtil.dip2px(getAppContext(), 5));
+//        emotionIndicator.setDotMargin(DImenUtil.dip2px(getAppContext(), 10));
+//        emotionIndicator.show();
 
-        emotionViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                emotionIndicator.setCurrentPosition(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
+//        emotionViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                emotionIndicator.setCurrentPosition(position);
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//            }
+//        });
 
         initButtonListener();
     }
@@ -240,7 +244,7 @@ public class InputChat extends BaseFragment {
                     onlyView3.setChildView(send2toolBtn);
                 }
                 onlyView4.setChildView(editText);
-                boxView.setChildView(emotionLinearLayout);
+                boxView.setChildView(emotionView);
             }
         });
         emoji2chatBtn.setOnClickListener(new View.OnClickListener() {

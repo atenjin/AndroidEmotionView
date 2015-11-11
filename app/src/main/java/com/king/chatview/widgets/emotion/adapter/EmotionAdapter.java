@@ -1,4 +1,4 @@
-package com.king.chatview.widgets.adapter;
+package com.king.chatview.widgets.emotion.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -46,6 +46,11 @@ public class EmotionAdapter extends PagerAdapter implements View.OnClickListener
     private ViewHolder mViewHolder;
 
     private EditText editText;
+
+
+    public EmotionAdapter(Context context) {
+        this(context, null);
+    }
 
     public EmotionAdapter(Context context, EditText editText) {
         this.context = context;
@@ -150,9 +155,14 @@ public class EmotionAdapter extends PagerAdapter implements View.OnClickListener
     public void onClick(View v) {
         int resId = (Integer) v.getTag(R.id.emoji_tag_id);
 
+        // 暂时这样
+        if (editText == null)
+            return;
+
         if (resId == -1) {
             //点击delete,执行删除操作
             KeyEvent event = new KeyEvent(0, 0, 0, KeyEvent.KEYCODE_DEL, 0, 0, 0, 0, KeyEvent.KEYCODE_ENDCALL);
+
             editText.dispatchKeyEvent(event);
         } else if (resId != 0) {
             BitmapFactory.Options options = new BitmapFactory.Options();
