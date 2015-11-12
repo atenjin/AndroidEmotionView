@@ -49,7 +49,7 @@ public class CustomEotionAdapter extends PagerAdapter implements View.OnClickLis
     private void initData() {
         // custom from pref
         customList = new ArrayList<>();
-        customList.add();
+//        customList.add();
     }
 
 
