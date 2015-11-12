@@ -3,7 +3,6 @@ package com.king.chatview.widgets.emotion;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -15,7 +14,7 @@ import com.king.chatview.R;
 import com.king.chatview.tools.DImenUtil;
 import com.king.chatview.widgets.CustomIndicator;
 import com.king.chatview.widgets.emotion.adapter.CustomEmotionAdapter;
-import com.king.chatview.widgets.emotion.adapter.EmotionAdapter;
+import com.king.chatview.widgets.emotion.adapter.EmotionAdapter2;
 import com.king.chatview.widgets.emotion.item.StickerItem;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class EmotionView extends LinearLayout {
     private List<ImageButton> stickerList = new ArrayList<>();
     private ImageView addStickers;
 
-    private EmotionAdapter emotionAdapter;
+    private EmotionAdapter2 emotionAdapter;
     private Context mContext;
 
     public EmotionView(Context context) {
@@ -72,13 +71,9 @@ public class EmotionView extends LinearLayout {
         emotionViewPager = (ViewPager) findViewById(R.id.emotionViewPager);
         emotionIndicator = (CustomIndicator) findViewById(R.id.emotionIndicator);
 
-        Log.d("hehe", "emotion view pager:" + emotionViewPager.getWidth());
-
         stickersSlider = (LinearLayout) findViewById(R.id.stickers_slider);
         addStickers = (ImageView) findViewById(R.id.add_stickers);
-
-        emotionAdapter = new EmotionAdapter(context, emotionViewPager);
-
+        emotionAdapter = new EmotionAdapter2(context, emotionViewPager);
         emotionViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

@@ -127,10 +127,6 @@ public class NewInputChat extends BaseFragment {
         toolBox = (ChatToolBox) rootView.findViewById(R.id.chat_tool_box);
         boxView = (OnlyView) rootView.findViewById(R.id.box_view);
 
-//        emotionLinearLayout = (LinearLayout) rootView.findViewById(R.id.emotionLinearLayout);
-//        emotionViewPager = (ViewPager) rootView.findViewById(R.id.emotionViewPager);
-//        emotionIndicator = (CustomIndicator) rootView.findViewById(R.id.emotionIndicator);
-
         emotionView = (EmotionView) rootView.findViewById(R.id.emotion_view);
         emotionView.setCustomEmotionListener(new CustomEmotionAdapter.CustomEmotion() {
             @Override

@@ -11,7 +11,6 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -132,26 +131,21 @@ public class EmotionAdapter extends PagerAdapter implements View.OnClickListener
             gridView = (GridView) LayoutInflater.from(this.context).inflate(R.layout.bx_emotion, null);
             gridView.setScrollContainer(false);
             gridView.setPadding(this.rate * 2, this.rate * 2, this.rate * 2, 0);
-            gridView.setHorizontalSpacing(this.rate);
-
-// emotionViewPager在initData阶段是可能没有高度的(gone) 只有在emotionViewPager进行页面填充的时候才一定会有高度
+            gridView.setNumColumns(COLUMN_COUNT);
+            // emotionViewPager在initData阶段是可能没有高度的(gone) 只有在emotionViewPager进行页面填充的时候才一定会有高度
             int viewPageHeight = View.MeasureSpec.getSize(emotionViewPager.getMeasuredHeight());
             int verticalSpacing = viewPageHeight / ROW_COUNT - size;
             if (verticalSpacing < 0)
                 verticalSpacing = 0;
 
-            Log.d("hehe", "viewPageHeight:" + viewPageHeight);
-            Log.d("hehe", "size:" + size);
-            Log.d("hehe", "verticalSpacing:" + verticalSpacing);
-
             gridView.setVerticalSpacing(verticalSpacing);
+            gridView.setHorizontalSpacing(this.rate);
             gridView.setMinimumHeight(viewPageHeight);
 
             adapter = new EmotionListAdapter();
             holder = new ViewHolder();
             holder.gridView = gridView;
             holder.adapter = adapter;
-            holder.gridView.setNumColumns(COLUMN_COUNT);
         }
         adapter.setData(this.mDrawablePageId[position], this.decId[position]);
         gridView.setAdapter(adapter);
