@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -49,6 +50,17 @@ public class EmotionView extends LinearLayout {
         init(context);
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+//        Log.d("hehe", "EmotionView height" + MeasureSpec.getSize(heightMeasureSpec));
+//        if (emotionAdapter != null) {
+//
+//            Log.d("hehe", "emotionViewPager.getHeight()" + emotionViewPager.getHeight());
+//            Log.d("hehe", "emotionViewPager.getMeasuredHeight()" + MeasureSpec.getSize(emotionViewPager.getMeasuredHeight()));
+//        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     private void init(Context context) {
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //加载布局文件
@@ -58,10 +70,16 @@ public class EmotionView extends LinearLayout {
         emotionViewPager = (ViewPager) findViewById(R.id.emotionViewPager);
         emotionIndicator = (CustomIndicator) findViewById(R.id.emotionIndicator);
 
+        Log.d("hehe", "emotion view pager:" + emotionViewPager.getWidth());
+
         stickersSlider = (LinearLayout) findViewById(R.id.stickers_slider);
         addStickers = (ImageView) findViewById(R.id.add_stickers);
 
-        emotionAdapter = new EmotionAdapter(context);
+        emotionAdapter = new EmotionAdapter(context, emotionViewPager);
+//        emotionAdapter.calcPadding(MeasureSpec.getSize(emotionViewPager.getMeasuredHeight()));
+
+        Log.d("hehe", "in initdate + " + MeasureSpec.getSize(emotionViewPager.getMeasuredHeight()));
+
         emotionViewPager.setAdapter(emotionAdapter);
 
         emotionViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -81,7 +99,7 @@ public class EmotionView extends LinearLayout {
         showEmotionIndicator(emotionAdapter);
 
         // blank
-        stickersSlider.addView(new StickerItem(context));
+//        stickersSlider.addView(new StickerItem(context));
         // emoj
         ImageButton emoj = new StickerItem(context, R.drawable.u1f004);
         stickersSlider.addView(emoj);
@@ -114,7 +132,7 @@ public class EmotionView extends LinearLayout {
             sticker.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    for(ImageButton temp : stickerList){
+                    for (ImageButton temp : stickerList) {
                         temp.setSelected(false);
                     }
                     sticker.setSelected(true);

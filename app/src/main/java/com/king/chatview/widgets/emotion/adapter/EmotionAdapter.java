@@ -6,10 +6,12 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +39,8 @@ public class EmotionAdapter extends PagerAdapter implements View.OnClickListener
 
     private String[] defaultCodeArray;
 
+    private int size = 0;
+
     private int rate = 0;
     private int item_length = 0;
     private int grid_height = 0;
@@ -47,14 +51,17 @@ public class EmotionAdapter extends PagerAdapter implements View.OnClickListener
 
     private EditText editText;
 
+    private ViewPager emotionViewPager;
 
-    public EmotionAdapter(Context context) {
-        this(context, null);
+
+    public EmotionAdapter(Context context, ViewPager viewPager) {
+        this(context, viewPager, null);
     }
 
-    public EmotionAdapter(Context context, EditText editText) {
+    public EmotionAdapter(Context context, ViewPager viewPager, EditText editText) {
         this.context = context;
         this.editText = editText;
+        this.emotionViewPager = viewPager;
         initData();
     }
 
@@ -87,6 +94,8 @@ public class EmotionAdapter extends PagerAdapter implements View.OnClickListener
         }
 
         DisplayMetrics dm = this.context.getResources().getDisplayMetrics();
+
+        this.size = dm.widthPixels / COLUMN_COUNT ;
 
         this.rate = (dm.widthPixels / (COLUMN_COUNT * 10 + 3));
         this.item_length = (this.rate * 9);
@@ -122,17 +131,31 @@ public class EmotionAdapter extends PagerAdapter implements View.OnClickListener
         } else {
             gridView = (GridView) LayoutInflater.from(this.context).inflate(R.layout.bx_emotion, null);
             gridView.setScrollContainer(false);
-            gridView.setPadding(this.rate * 2, this.rate * 2, this.rate * 2, this.rate * 2);
+            gridView.setPadding(this.rate * 2, this.rate * 2, this.rate * 2, 0);
             gridView.setHorizontalSpacing(this.rate);
-            float scale = this.context.getResources().getDisplayMetrics().density;
+            /////////////
+//            float scale = this.context.getResources().getDisplayMetrics().density;
+//
+//            if (scale <= 1.5D) {
+//                gridView.setVerticalSpacing(38);
+//                gridView.setMinimumHeight(272);
+//            } else {
+//                gridView.setVerticalSpacing(58);
+//                gridView.setMinimumHeight(406);
+//            }
+            ///////////////
+// emotionViewPager在initData阶段是可能没有高度的(gone) 只有在emotionViewPager进行页面填充的时候才一定会有高度
+            int viewPageHeight = View.MeasureSpec.getSize(emotionViewPager.getMeasuredHeight());
+            int verticalSpacing = viewPageHeight / ROW_COUNT - size;
+            if (verticalSpacing < 0)
+                verticalSpacing = 0;
 
-            if (scale <= 1.5D) {
-                gridView.setVerticalSpacing(38);
-                gridView.setMinimumHeight(272);
-            } else {
-                gridView.setVerticalSpacing(58);
-                gridView.setMinimumHeight(406);
-            }
+            Log.d("hehe", "viewPageHeight:" + viewPageHeight);
+            Log.d("hehe", "size:" + size);
+            Log.d("hehe", "verticalSpacing:" + verticalSpacing);
+
+            gridView.setVerticalSpacing(verticalSpacing);
+            gridView.setMinimumHeight(viewPageHeight);
 
             adapter = new EmotionListAdapter();
             holder = new ViewHolder();

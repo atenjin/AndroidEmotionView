@@ -181,7 +181,7 @@ public class NewInputChat extends BaseFragment {
         editText = (EditText) buttonView.findViewById(R.id.id_edit);
         editText.setCursorVisible(true);
 
-        emotionAdapter = new EmotionAdapter(getAppContext(), editText);
+//        emotionAdapter = new EmotionAdapter(getAppContext(), editText);
 //        emotionViewPager.setAdapter(emotionAdapter);
 
 //        emotionIndicator.setDotCount(emotionAdapter.getCount());

@@ -12,10 +12,11 @@
         <com.king.chatview.widgets.CustomIndicator
             android:id="@+id/emotionIndicator"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="10dp"
             android:layout_gravity="center_horizontal"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
             android:gravity="center" />
 
         <android.support.v4.view.ViewPager
@@ -44,7 +45,8 @@
         </HorizontalScrollView>
         <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="gone">
             <com.king.chatview.widgets.emotion.item.StickerItem
                 android:id="@+id/add_stickers"
                 android:layout_width="match_parent"
