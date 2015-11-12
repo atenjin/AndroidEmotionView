@@ -17,11 +17,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.king.chatview.R;
 import com.king.chatview.fragment.BaseFragment;
 import com.king.chatview.tools.DImenUtil;
 import com.king.chatview.utils.BundleArguments;
+import com.king.chatview.widgets.emotion.adapter.CustomEmotionAdapter;
 import com.king.chatview.widgets.emotion.adapter.EmotionAdapter;
 import com.king.chatview.widgets.emotion.EmotionView;
 
@@ -130,6 +132,17 @@ public class NewInputChat extends BaseFragment {
 //        emotionIndicator = (CustomIndicator) rootView.findViewById(R.id.emotionIndicator);
 
         emotionView = (EmotionView) rootView.findViewById(R.id.emotion_view);
+        emotionView.setCustomEmotionListener(new CustomEmotionAdapter.CustomEmotion() {
+            @Override
+            public void OnAddCustomEmotions() {
+                Toast.makeText(NewInputChat.this.getContext(),"click add", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void OnClickCustomEmotions(View v, String path) {
+                Toast.makeText(NewInputChat.this.getContext(),"click custom", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         init();
         return rootView;

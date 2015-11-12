@@ -135,7 +135,6 @@ public class EmotionAdapter extends PagerAdapter implements View.OnClickListener
             gridView.setHorizontalSpacing(this.rate);
             /////////////
 //            float scale = this.context.getResources().getDisplayMetrics().density;
-//
 //            if (scale <= 1.5D) {
 //                gridView.setVerticalSpacing(38);
 //                gridView.setMinimumHeight(272);
@@ -169,6 +168,7 @@ public class EmotionAdapter extends PagerAdapter implements View.OnClickListener
         return holder;
     }
 
+    @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         this.mViewHolder = ((ViewHolder) object);
         container.removeView(this.mViewHolder.gridView);

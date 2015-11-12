@@ -1,7 +1,6 @@
 package com.king.chatview.widgets.emotion;
 
 import android.content.Context;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -15,6 +14,7 @@ import android.widget.RelativeLayout;
 import com.king.chatview.R;
 import com.king.chatview.tools.DImenUtil;
 import com.king.chatview.widgets.CustomIndicator;
+import com.king.chatview.widgets.emotion.adapter.CustomEmotionAdapter;
 import com.king.chatview.widgets.emotion.adapter.EmotionAdapter;
 import com.king.chatview.widgets.emotion.item.StickerItem;
 
@@ -25,6 +25,8 @@ import java.util.List;
  * Created by Administrator on 2015/11/11.
  */
 public class EmotionView extends LinearLayout {
+
+    private CustomEmotionAdapter.CustomEmotion customEmotion;
     private RelativeLayout emotionLinearLayout;
     private ViewPager emotionViewPager;
     private CustomIndicator emotionIndicator;
@@ -76,11 +78,6 @@ public class EmotionView extends LinearLayout {
         addStickers = (ImageView) findViewById(R.id.add_stickers);
 
         emotionAdapter = new EmotionAdapter(context, emotionViewPager);
-//        emotionAdapter.calcPadding(MeasureSpec.getSize(emotionViewPager.getMeasuredHeight()));
-
-        Log.d("hehe", "in initdate + " + MeasureSpec.getSize(emotionViewPager.getMeasuredHeight()));
-
-        emotionViewPager.setAdapter(emotionAdapter);
 
         emotionViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -96,7 +93,8 @@ public class EmotionView extends LinearLayout {
             public void onPageScrollStateChanged(int state) {
             }
         });
-        showEmotionIndicator(emotionAdapter);
+        emotionViewPager.setAdapter(emotionAdapter);
+        showEmotionIndicator(emotionAdapter.getCount());
 
         // blank
 //        stickersSlider.addView(new StickerItem(context));
@@ -106,29 +104,26 @@ public class EmotionView extends LinearLayout {
         // custom
         ImageButton custom = new StickerItem(context, R.mipmap.ic_launcher);
         stickersSlider.addView(custom);
-        // temp
-        ImageButton temp = new StickerItem(context, R.mipmap.ic_launcher);
-        stickersSlider.addView(temp);
 
         stickerList.add(emoj);
         stickerList.add(custom);
-        stickerList.add(temp);
 
         emoj.setSelected(true);
         initStickerOnClickListener();
     }
 
-    private void showEmotionIndicator(PagerAdapter adapter) {
-        emotionIndicator.setDotCount(adapter.getCount());
+    private void showEmotionIndicator(int count) {
+        emotionIndicator.setDotCount(count);
         emotionIndicator.setDotHeight(DImenUtil.dip2px(mContext, 5));
         emotionIndicator.setDotWidth(DImenUtil.dip2px(mContext, 5));
         emotionIndicator.setDotMargin(DImenUtil.dip2px(mContext, 10));
         emotionIndicator.show();
     }
 
-
     private void initStickerOnClickListener() {
+        int index = 0;
         for (final ImageButton sticker : stickerList) {
+            final int tempIndex = index;
             sticker.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -136,14 +131,32 @@ public class EmotionView extends LinearLayout {
                         temp.setSelected(false);
                     }
                     sticker.setSelected(true);
-
+                    switchOtherStickers(tempIndex);
                 }
             });
+
+            index++;
         }
     }
 
-    private void switchOtherStickers() {
+    private void switchOtherStickers(int index) {
+        if (index == 0) {
+            emotionViewPager.setAdapter(emotionAdapter);
+            showEmotionIndicator(emotionAdapter.getCount());
+        }
+        if (index == 1) {
+            CustomEmotionAdapter adapter = new CustomEmotionAdapter(mContext, customEmotion, emotionViewPager);
+            emotionViewPager.setAdapter(adapter);
+            showEmotionIndicator(adapter.getCount());
+        }
 
     }
 
+    public CustomEmotionAdapter.CustomEmotion getCustomEmotion() {
+        return customEmotion;
+    }
+
+    public void setCustomEmotionListener(CustomEmotionAdapter.CustomEmotion customEmotion) {
+        this.customEmotion = customEmotion;
+    }
 }

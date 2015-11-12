@@ -16,6 +16,8 @@ import com.king.chatview.R;
  */
 public class StickerItem extends ImageButton {
 
+    private Context mContext;
+
     public StickerItem(Context context) {
         this(context, null);
     }
@@ -27,17 +29,17 @@ public class StickerItem extends ImageButton {
     public StickerItem(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 //        this.setImageResource(R.mipmap.ic_launcher);
-        init();
+        init(context);
     }
 
     public StickerItem(Context context, int backgroundResId) {
         this(context);
-        init();
+        init(context);
         this.setImageResource(backgroundResId);
-
     }
 
-    private void init() {
+    private void init(Context context) {
+        this.mContext = context;
         this.setScaleType(ScaleType.CENTER_INSIDE);
         this.setBackgroundResource(R.drawable.sticker_style);
         this.setPadding(5, 5, 5, 5);
@@ -51,7 +53,8 @@ public class StickerItem extends ImageButton {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        widthMeasureSpec = MeasureSpec.makeMeasureSpec(200, MeasureSpec.EXACTLY);
+        int width = mContext.getResources().getDisplayMetrics().widthPixels / 4;
+        widthMeasureSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY);
         setMeasuredDimension(widthMeasureSpec, getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec));
         //        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
