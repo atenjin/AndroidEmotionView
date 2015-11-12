@@ -133,16 +133,7 @@ public class EmotionAdapter extends PagerAdapter implements View.OnClickListener
             gridView.setScrollContainer(false);
             gridView.setPadding(this.rate * 2, this.rate * 2, this.rate * 2, 0);
             gridView.setHorizontalSpacing(this.rate);
-            /////////////
-//            float scale = this.context.getResources().getDisplayMetrics().density;
-//            if (scale <= 1.5D) {
-//                gridView.setVerticalSpacing(38);
-//                gridView.setMinimumHeight(272);
-//            } else {
-//                gridView.setVerticalSpacing(58);
-//                gridView.setMinimumHeight(406);
-//            }
-            ///////////////
+
 // emotionViewPager在initData阶段是可能没有高度的(gone) 只有在emotionViewPager进行页面填充的时候才一定会有高度
             int viewPageHeight = View.MeasureSpec.getSize(emotionViewPager.getMeasuredHeight());
             int verticalSpacing = viewPageHeight / ROW_COUNT - size;
