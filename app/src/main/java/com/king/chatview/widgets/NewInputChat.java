@@ -23,7 +23,7 @@ import com.king.chatview.R;
 import com.king.chatview.fragment.BaseFragment;
 import com.king.chatview.tools.DImenUtil;
 import com.king.chatview.utils.BundleArguments;
-import com.king.chatview.widgets.emotion.adapter.CustomEmotionAdapter;
+import com.king.chatview.widgets.emotion.adapter.CustomEmotionAdapter2;
 import com.king.chatview.widgets.emotion.adapter.EmotionAdapter;
 import com.king.chatview.widgets.emotion.EmotionView;
 
@@ -127,8 +127,9 @@ public class NewInputChat extends BaseFragment {
         toolBox = (ChatToolBox) rootView.findViewById(R.id.chat_tool_box);
         boxView = (OnlyView) rootView.findViewById(R.id.box_view);
 
+        // TODO 与原来不同的部分
         emotionView = (EmotionView) rootView.findViewById(R.id.emotion_view);
-        emotionView.setCustomEmotionListener(new CustomEmotionAdapter.CustomEmotion() {
+        emotionView.setCustomEmotionListener(new CustomEmotionAdapter2.CustomEmotion() {
             @Override
             public void OnAddCustomEmotions() {
                 Toast.makeText(NewInputChat.this.getContext(),"click add", Toast.LENGTH_SHORT).show();
@@ -189,30 +190,6 @@ public class NewInputChat extends BaseFragment {
         onlyView4 = (OnlyView) buttonView.findViewById(R.id.voice_view);
         editText = (EditText) buttonView.findViewById(R.id.id_edit);
         editText.setCursorVisible(true);
-
-//        emotionAdapter = new EmotionAdapter(getAppContext(), editText);
-//        emotionViewPager.setAdapter(emotionAdapter);
-
-//        emotionIndicator.setDotCount(emotionAdapter.getCount());
-//        emotionIndicator.setDotHeight(DImenUtil.dip2px(getAppContext(), 5));
-//        emotionIndicator.setDotWidth(DImenUtil.dip2px(getAppContext(), 5));
-//        emotionIndicator.setDotMargin(DImenUtil.dip2px(getAppContext(), 10));
-//        emotionIndicator.show();
-
-//        emotionViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                emotionIndicator.setCurrentPosition(position);
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//            }
-//        });
 
         initButtonListener();
     }

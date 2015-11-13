@@ -103,6 +103,7 @@ public class CustomEmotionAdapter extends PagerAdapter implements View.OnClickLi
         rate = (dm.widthPixels / (COLUMN_COUNT * 10 + 3));
     }
 
+
     @Override
     public int getCount() {
         return mCount;

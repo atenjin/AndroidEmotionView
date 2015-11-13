@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -27,11 +28,12 @@ public class EmotionAdapter2 extends BaseEmotionAdapter<EmotionAdapter2.EmotionL
     private static final int COLUMN_COUNT = 7;
     private static final int P_COUNT = ROW_COUNT * COLUMN_COUNT - 1;
 
+    private int[] mDrawableResId;
     private int[][] mDrawablePageId;
     private int[][] decId;
 
-    public int rate = 0;
-    private int item_length = 0;
+    public int rate;
+    private int item_length;
 
     private EditText editText;
 
@@ -49,15 +51,15 @@ public class EmotionAdapter2 extends BaseEmotionAdapter<EmotionAdapter2.EmotionL
         Resources res = mContext.getResources();
         TypedArray icons = res.obtainTypedArray(R.array.emotion_array);
 
-        int[] mDrawableResId = new int[icons.length()];
+        mDrawableResId = new int[icons.length()];
         for (int i = 0; i < mDrawableResId.length; ++i) {
             mDrawableResId[i] = icons.getResourceId(i, 0);
         }
 
         if (mDrawableResId.length % P_COUNT > 0)
-            this.mCount = mDrawableResId.length / P_COUNT + 1;
+            mCount = mDrawableResId.length / P_COUNT + 1;
         else {
-            this.mCount = mDrawableResId.length / P_COUNT;
+            mCount = mDrawableResId.length / P_COUNT;
         }
 
         int[] intStringArray = mContext.getResources().getIntArray(R.array.emotion_dec_int);
@@ -70,11 +72,16 @@ public class EmotionAdapter2 extends BaseEmotionAdapter<EmotionAdapter2.EmotionL
                 this.decId[i][j] = intStringArray[(i * P_COUNT + j)];
             }
         }
-        mSize = viewPageWidth / COLUMN_COUNT;
         rate = (viewPageWidth / (COLUMN_COUNT * 10 + 3));
         item_length = (this.rate * 9);
     }
 
+    @Override
+    protected int calcItemSize(int viewPageWidth) {
+        return viewPageWidth / COLUMN_COUNT;
+    }
+
+    @NonNull
     @Override
     public GridView instantiateGridView() {
         GridView gridView = (GridView) LayoutInflater.from(mContext).inflate(R.layout.bx_emotion, null);
@@ -84,6 +91,7 @@ public class EmotionAdapter2 extends BaseEmotionAdapter<EmotionAdapter2.EmotionL
         return gridView;
     }
 
+    @NonNull
     @Override
     public EmotionListAdapter createListAdapter() {
         return new EmotionListAdapter();
@@ -96,13 +104,12 @@ public class EmotionAdapter2 extends BaseEmotionAdapter<EmotionAdapter2.EmotionL
     }
 
     @Override
-    protected GridView setGridViewSpacing(GridView gridView, int viewPageHeight, int viewPageWeight) {
+    protected void setGridViewSpacing(GridView gridView, int viewPageHeight, int viewPageWeight) {
         int verticalSpacing = viewPageHeight / ROW_COUNT - mSize;
         if (verticalSpacing < 0)
             verticalSpacing = 0;
         gridView.setVerticalSpacing(verticalSpacing);
         gridView.setHorizontalSpacing(rate);
-        return gridView;
     }
 
     @Override
@@ -157,8 +164,6 @@ public class EmotionAdapter2 extends BaseEmotionAdapter<EmotionAdapter2.EmotionL
         public View getView(int position, View convertView, ViewGroup parent) {
             ImageView img = new ImageView(mContext);
 
-            EmotionAdapter2 adapter2 = EmotionAdapter2.this;
-            //?????
             img.setLayoutParams(new GridView.LayoutParams(item_length, item_length));
             img.setPadding(rate, rate, rate, rate);
 

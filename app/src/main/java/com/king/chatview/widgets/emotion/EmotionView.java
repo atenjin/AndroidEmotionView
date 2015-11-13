@@ -13,7 +13,8 @@ import android.widget.RelativeLayout;
 import com.king.chatview.R;
 import com.king.chatview.tools.DImenUtil;
 import com.king.chatview.widgets.CustomIndicator;
-import com.king.chatview.widgets.emotion.adapter.CustomEmotionAdapter;
+import com.king.chatview.widgets.emotion.adapter.BaseEmotionAdapter;
+import com.king.chatview.widgets.emotion.adapter.CustomEmotionAdapter2;
 import com.king.chatview.widgets.emotion.adapter.EmotionAdapter2;
 import com.king.chatview.widgets.emotion.item.StickerItem;
 
@@ -25,16 +26,22 @@ import java.util.List;
  */
 public class EmotionView extends LinearLayout {
 
-    private CustomEmotionAdapter.CustomEmotion customEmotion;
+    private CustomEmotionAdapter2.CustomEmotion customEmotion;
     private RelativeLayout emotionLinearLayout;
     private ViewPager emotionViewPager;
     private CustomIndicator emotionIndicator;
 
     private LinearLayout stickersSlider;
     private List<ImageButton> stickerList = new ArrayList<>();
+    // 用来添加表情包的按钮
     private ImageView addStickers;
 
-    private EmotionAdapter2 emotionAdapter;
+
+    List<BaseEmotionAdapter> emotionAdapterList;
+
+    private BaseEmotionAdapter emotionAdapter;
+    private BaseEmotionAdapter customAdapter;
+
     private Context mContext;
 
     public EmotionView(Context context) {
@@ -51,17 +58,6 @@ public class EmotionView extends LinearLayout {
         init(context);
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        Log.d("hehe", "EmotionView height" + MeasureSpec.getSize(heightMeasureSpec));
-//        if (emotionAdapter != null) {
-//
-//            Log.d("hehe", "emotionViewPager.getHeight()" + emotionViewPager.getHeight());
-//            Log.d("hehe", "emotionViewPager.getMeasuredHeight()" + MeasureSpec.getSize(emotionViewPager.getMeasuredHeight()));
-//        }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
     private void init(Context context) {
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //加载布局文件
@@ -73,7 +69,14 @@ public class EmotionView extends LinearLayout {
 
         stickersSlider = (LinearLayout) findViewById(R.id.stickers_slider);
         addStickers = (ImageView) findViewById(R.id.add_stickers);
+
+        emotionAdapterList = new ArrayList<>();
+
         emotionAdapter = new EmotionAdapter2(context, emotionViewPager);
+
+        emotionAdapterList.add(emotionAdapter);
+        emotionAdapterList.add(customAdapter);
+
         emotionViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -88,23 +91,23 @@ public class EmotionView extends LinearLayout {
             public void onPageScrollStateChanged(int state) {
             }
         });
-        emotionViewPager.setAdapter(emotionAdapter);
-        showEmotionIndicator(emotionAdapter.getCount());
+        this.setEmotionAdapter(emotionAdapter);
 
-        // blank
-//        stickersSlider.addView(new StickerItem(context));
-        // emoj
-        ImageButton emoj = new StickerItem(context, R.drawable.u1f004);
-        stickersSlider.addView(emoj);
+        // emoji
+        ImageButton emoji = new StickerItem(context, R.drawable.u1f004);
+        this.addStickerButton(emoji);
+
         // custom
         ImageButton custom = new StickerItem(context, R.mipmap.ic_launcher);
-        stickersSlider.addView(custom);
+        this.addStickerButton(custom);
 
-        stickerList.add(emoj);
-        stickerList.add(custom);
-
-        emoj.setSelected(true);
+        emoji.setSelected(true);
         initStickerOnClickListener();
+    }
+
+    private void addStickerButton(ImageButton button) {
+        stickersSlider.addView(button);
+        stickerList.add(button);
     }
 
     private void showEmotionIndicator(int count) {
@@ -129,29 +132,46 @@ public class EmotionView extends LinearLayout {
                     switchOtherStickers(tempIndex);
                 }
             });
-
             index++;
         }
     }
 
     private void switchOtherStickers(int index) {
+        BaseEmotionAdapter adapter;
         if (index == 0) {
-            emotionViewPager.setAdapter(emotionAdapter);
-            showEmotionIndicator(emotionAdapter.getCount());
+            adapter = emotionAdapter;
+        } else {
+            adapter = emotionAdapterList.get(index);
+            if (adapter == null) {
+                adapter = new CustomEmotionAdapter2(mContext, emotionViewPager);
+                emotionAdapterList.set(index, adapter);
+            }
         }
-        if (index == 1) {
-            CustomEmotionAdapter adapter = new CustomEmotionAdapter(mContext, customEmotion, emotionViewPager);
-            emotionViewPager.setAdapter(adapter);
-            showEmotionIndicator(adapter.getCount());
-        }
-
+        this.setEmotionAdapter(adapter);
     }
 
-    public CustomEmotionAdapter.CustomEmotion getCustomEmotion() {
+    private void setEmotionAdapter(BaseEmotionAdapter adapter) {
+        emotionViewPager.setAdapter(adapter);
+        showEmotionIndicator(adapter.getCount());
+    }
+
+    public CustomEmotionAdapter2.CustomEmotion getCustomEmotionListener() {
         return customEmotion;
     }
 
-    public void setCustomEmotionListener(CustomEmotionAdapter.CustomEmotion customEmotion) {
+    public void setCustomEmotionListener(CustomEmotionAdapter2.CustomEmotion customEmotion) {
         this.customEmotion = customEmotion;
+    }
+
+    public void setCustomEmotionPathList(List<String> pathList) {
+        if (emotionAdapterList == null)
+            return;
+        CustomEmotionAdapter2 adapter = (CustomEmotionAdapter2) emotionAdapterList.get(1);
+        if (adapter == null) {
+            adapter = new CustomEmotionAdapter2(mContext, emotionViewPager, pathList, customEmotion);
+            emotionAdapterList.set(1, adapter);
+        } else {
+            adapter.setImgList(pathList);
+        }
     }
 }
