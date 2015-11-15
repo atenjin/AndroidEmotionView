@@ -1,6 +1,5 @@
 package com.king.chatview.widgets.emotion.adapter;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
@@ -14,72 +13,29 @@ import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.king.chatview.R;
+import com.king.chatview.widgets.emotion.EmotionView;
+import com.king.chatview.widgets.emotion.data.EmotionData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Administrator on 2015/11/13.
  */
 public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapter2.CustomEmotionListAdapter> {
-
-    public interface CustomEmotion {
-        void OnAddCustomEmotions();
-
-        void OnClickCustomEmotions(View v, String path);
-    }
-
-    private static final int ROW_COUNT = 2;
-    private static final int COLUMN_COUNT = 4;
-    private static final int P_COUNT = ROW_COUNT * COLUMN_COUNT;
-
-    private CustomEmotionAdapter2.CustomEmotion customEmotionListener;
     private List<String> customImgPathList;
 
-    public CustomEmotionAdapter2(Context context, ViewPager viewPager) {
-        super(context, viewPager);
+    public CustomEmotionAdapter2(Context context, ViewPager viewPager, EmotionData<String> emotionData, EmotionView.EmotionClickListener emotionClickListener) {
+        super(context, viewPager, emotionData, emotionClickListener);
+        initData(emotionData);
     }
 
-    public CustomEmotionAdapter2(Context context, ViewPager viewPager, List<String> customImgPathList) {
-        super(context, viewPager);
-        this.customImgPathList = customImgPathList;
-    }
-
-
-    public CustomEmotionAdapter2(Context context, ViewPager viewPager, List<String> customImgPathList, CustomEmotion customEmotionListener) {
-        super(context, viewPager);
-        this.customEmotionListener = customEmotionListener;
-        this.customImgPathList = customImgPathList;
-    }
-
-    @Override
-    protected void initData() {
-        // 暂时用作缺省使用。
-        if (customImgPathList == null) {
-            String addImageUrl = this.getResourceUriString(mContext, R.mipmap.ic_launcher);
-            customImgPathList = new ArrayList<>();
-            customImgPathList.add(addImageUrl);
+    private void initData(EmotionData<String> emotionData) {
+        if (emotionData.getUniqueItem() != null) {
+            List<String> list = emotionData.getEmotionList();
+            list.add(0, emotionData.getUniqueItem());
+            emotionData.setEmotionList(list);
         }
-    }
-
-    @Override
-    protected int calcItemSize(int viewPageWidth) {
-        return viewPageWidth / COLUMN_COUNT;
-    }
-
-    @Override
-    protected int calcPageNumber() {
-        if (customImgPathList == null)
-            return 1;
-
-        int count;
-        if (customImgPathList.size() % P_COUNT > 0) {
-            count = customImgPathList.size() / P_COUNT + 1;
-        } else {
-            count = customImgPathList.size() / P_COUNT;
-        }
-
-        return count;
+        customImgPathList = emotionData.getEmotionList();
     }
 
     @NonNull
@@ -87,30 +43,13 @@ public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapt
     public GridView instantiateGridView() {
         GridView gridView = (GridView) LayoutInflater.from(mContext).inflate(R.layout.bx_emotion, null);
         gridView.setScrollContainer(false);
-        gridView.setNumColumns(COLUMN_COUNT);
         return gridView;
-    }
-
-    public String getResourceUriString(Context context, int resource) {
-        return ContentResolver.SCHEME_ANDROID_RESOURCE + "://"
-                + context.getResources().getResourcePackageName(resource) + "/"
-                + context.getResources().getResourceTypeName(resource) + "/"
-                + context.getResources().getResourceEntryName(resource);
     }
 
     @NonNull
     @Override
     public CustomEmotionListAdapter createListAdapter() {
         return new CustomEmotionListAdapter();
-    }
-
-    @Override
-    protected void setGridViewSpacing(GridView gridView, int viewPageHeight, int viewPageWeight) {
-        int verticalSpacing = viewPageHeight / ROW_COUNT - mSize;
-        if (verticalSpacing < 0)
-            verticalSpacing = 0;
-        gridView.setVerticalSpacing(verticalSpacing);
-        // 这里不设置横向间距，靠RelativeLayout布局
     }
 
     @Override
@@ -125,22 +64,18 @@ public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapt
     @Override
     public void onClick(View v) {
         Object path = v.getTag();
-        if (path != null && customEmotionListener != null) {
+        if (path != null && mEmotionClickListener != null) {
             String pathString = (String) path;
-            if (pathString.equals(customImgPathList.get(0))) {
-                customEmotionListener.OnAddCustomEmotions();
+            if (mEmotionData.getUniqueItem() != null) {
+                if (pathString.equals(mEmotionData.getUniqueItem())) {
+//                    mEmotionClickListener.OnUniqueEmotionClick();
+                } else {
+//                    mEmotionClickListener.OnEmotionClick();
+                }
             } else {
-                customEmotionListener.OnClickCustomEmotions(v, pathString);
+//                mEmotionClickListener.OnEmotionClick();
             }
         }
-    }
-
-    public CustomEmotion getCustomEmotionListener() {
-        return customEmotionListener;
-    }
-
-    public void setCustomEmotionListener(CustomEmotion customEmotionListener) {
-        this.customEmotionListener = customEmotionListener;
     }
 
     public List<String> getImgList() {

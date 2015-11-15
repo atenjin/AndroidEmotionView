@@ -16,6 +16,7 @@ import com.king.chatview.widgets.CustomIndicator;
 import com.king.chatview.widgets.emotion.adapter.BaseEmotionAdapter;
 import com.king.chatview.widgets.emotion.adapter.CustomEmotionAdapter2;
 import com.king.chatview.widgets.emotion.adapter.EmotionAdapter2;
+import com.king.chatview.widgets.emotion.data.EmotionData;
 import com.king.chatview.widgets.emotion.item.StickerItem;
 
 import java.util.ArrayList;
@@ -26,7 +27,25 @@ import java.util.List;
  */
 public class EmotionView extends LinearLayout {
 
-    private CustomEmotionAdapter2.CustomEmotion customEmotion;
+    public EmotionClickListener getEmotionClickListener() {
+        return emotionClickListener;
+    }
+
+    public void setEmotionClickListener(EmotionClickListener emotionClickListener) {
+        this.emotionClickListener = emotionClickListener;
+    }
+
+    public interface EmotionClickListener {
+        void OnEmotionClick(EmotionData emotionData, View v);
+
+        void OnUniqueEmotionClick(EmotionData emotionData, View v);
+    }
+
+    private EmotionClickListener emotionClickListener;
+
+    private List<EmotionData> emotionDataList;
+
+    //    private CustomEmotionAdapter2.CustomEmotion customEmotion;
     private RelativeLayout emotionLinearLayout;
     private ViewPager emotionViewPager;
     private CustomIndicator emotionIndicator;
@@ -36,11 +55,7 @@ public class EmotionView extends LinearLayout {
     // 用来添加表情包的按钮
     private ImageView addStickers;
 
-
-    List<BaseEmotionAdapter> emotionAdapterList;
-
-    private BaseEmotionAdapter emotionAdapter;
-    private BaseEmotionAdapter customAdapter;
+    private List<BaseEmotionAdapter> emotionAdapterList;
 
     private Context mContext;
 
@@ -55,10 +70,10 @@ public class EmotionView extends LinearLayout {
     public EmotionView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
-        init(context);
+//        init(context);
     }
 
-    private void init(Context context) {
+    private void init(Context context, List<EmotionData> emotionDataList) {
         LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         //加载布局文件
         mInflater.inflate(R.layout.emotion_view, this, true);
@@ -68,14 +83,33 @@ public class EmotionView extends LinearLayout {
         emotionIndicator = (CustomIndicator) findViewById(R.id.emotionIndicator);
 
         stickersSlider = (LinearLayout) findViewById(R.id.stickers_slider);
+        // 暂时未使用
         addStickers = (ImageView) findViewById(R.id.add_stickers);
 
+
+        // 重构
+        // 初始化tab
+        initStickers(emotionDataList);
+
+
+        // 点开界面第一个tab元素必须被初始化
         emotionAdapterList = new ArrayList<>();
-
-        emotionAdapter = new EmotionAdapter2(context, emotionViewPager);
-
-        emotionAdapterList.add(emotionAdapter);
-        emotionAdapterList.add(customAdapter);
+        int index = 0;
+        for (EmotionData data : emotionDataList) {
+            BaseEmotionAdapter emotionAdapter = this.createEmotionAdapter(data);
+            if (index == 0) {
+                // emoji
+                this.setEmotionAdapter(emotionAdapter);
+            }
+            emotionAdapterList.add(emotionAdapter);
+            index++;
+        }
+//        BaseEmotionAdapter firstEmotionAdapter = this.createEmotionAdapter(emotionDataList.get(0));
+//        emotionAdapterList.add(firstEmotionAdapter);
+// 先暂时做延迟化初始处理
+//        emotionAdapter = new EmotionAdapter2(context, emotionViewPager);
+//        emotionAdapterList.add(emotionAdapter);
+//        emotionAdapterList.add(customAdapter);
 
         emotionViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -91,18 +125,6 @@ public class EmotionView extends LinearLayout {
             public void onPageScrollStateChanged(int state) {
             }
         });
-        this.setEmotionAdapter(emotionAdapter);
-
-        // emoji
-        ImageButton emoji = new StickerItem(context, R.drawable.u1f004);
-        this.addStickerButton(emoji);
-
-        // custom
-        ImageButton custom = new StickerItem(context, R.mipmap.ic_launcher);
-        this.addStickerButton(custom);
-
-        emoji.setSelected(true);
-        initStickerOnClickListener();
     }
 
     private void addStickerButton(ImageButton button) {
@@ -118,17 +140,24 @@ public class EmotionView extends LinearLayout {
         emotionIndicator.show();
     }
 
-    private void initStickerOnClickListener() {
+    private void initStickers(List<EmotionData> emotionDataList) {
         int index = 0;
-        for (final ImageButton sticker : stickerList) {
+        for (EmotionData data : emotionDataList) {
+            final StickerItem stickerTab = new StickerItem(mContext, data.getStickerIcon());
+            this.addStickerButton(stickerTab);
+            if (index == 0) {
+                // 初始化选中第一个tab
+                stickerTab.setSelected(true);
+            }
+            // 设置监听
             final int tempIndex = index;
-            sticker.setOnClickListener(new OnClickListener() {
+            stickerTab.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     for (ImageButton temp : stickerList) {
                         temp.setSelected(false);
                     }
-                    sticker.setSelected(true);
+                    stickerTab.setSelected(true);
                     switchOtherStickers(tempIndex);
                 }
             });
@@ -137,17 +166,7 @@ public class EmotionView extends LinearLayout {
     }
 
     private void switchOtherStickers(int index) {
-        BaseEmotionAdapter adapter;
-        if (index == 0) {
-            adapter = emotionAdapter;
-        } else {
-            adapter = emotionAdapterList.get(index);
-            if (adapter == null) {
-                adapter = new CustomEmotionAdapter2(mContext, emotionViewPager);
-                emotionAdapterList.set(index, adapter);
-            }
-        }
-        this.setEmotionAdapter(adapter);
+        this.setEmotionAdapter(emotionAdapterList.get(index));
     }
 
     private void setEmotionAdapter(BaseEmotionAdapter adapter) {
@@ -155,23 +174,25 @@ public class EmotionView extends LinearLayout {
         showEmotionIndicator(adapter.getCount());
     }
 
-    public CustomEmotionAdapter2.CustomEmotion getCustomEmotionListener() {
-        return customEmotion;
+    public List<EmotionData> getEmotionDataList() {
+        return emotionDataList;
     }
 
-    public void setCustomEmotionListener(CustomEmotionAdapter2.CustomEmotion customEmotion) {
-        this.customEmotion = customEmotion;
+    public void setEmotionDataList(List<EmotionData> emotionDataList) {
+        this.emotionDataList = emotionDataList;
+        init(mContext, emotionDataList);
     }
 
-    public void setCustomEmotionPathList(List<String> pathList) {
-        if (emotionAdapterList == null)
-            return;
-        CustomEmotionAdapter2 adapter = (CustomEmotionAdapter2) emotionAdapterList.get(1);
-        if (adapter == null) {
-            adapter = new CustomEmotionAdapter2(mContext, emotionViewPager, pathList, customEmotion);
-            emotionAdapterList.set(1, adapter);
-        } else {
-            adapter.setImgList(pathList);
+    private BaseEmotionAdapter createEmotionAdapter(EmotionData data) {
+        BaseEmotionAdapter adapter = null;
+        switch (data.getCategory()) {
+            case emoji:
+                adapter = new EmotionAdapter2(mContext, emotionViewPager, data, emotionClickListener);
+                break;
+            case image:
+                adapter = new CustomEmotionAdapter2(mContext, emotionViewPager, data, emotionClickListener);
+            default:
         }
+        return adapter;
     }
 }

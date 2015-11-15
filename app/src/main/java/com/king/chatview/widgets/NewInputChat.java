@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,15 +18,16 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.king.chatview.R;
 import com.king.chatview.fragment.BaseFragment;
 import com.king.chatview.tools.DImenUtil;
 import com.king.chatview.utils.BundleArguments;
-import com.king.chatview.widgets.emotion.adapter.CustomEmotionAdapter2;
-import com.king.chatview.widgets.emotion.adapter.EmotionAdapter;
+import com.king.chatview.utils.ResourceUtil;
 import com.king.chatview.widgets.emotion.EmotionView;
+import com.king.chatview.widgets.emotion.adapter.EmotionAdapter;
+import com.king.chatview.widgets.emotion.data.Emoji;
+import com.king.chatview.widgets.emotion.data.EmotionData;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -129,17 +131,51 @@ public class NewInputChat extends BaseFragment {
 
         // TODO 与原来不同的部分
         emotionView = (EmotionView) rootView.findViewById(R.id.emotion_view);
-        emotionView.setCustomEmotionListener(new CustomEmotionAdapter2.CustomEmotion() {
-            @Override
-            public void OnAddCustomEmotions() {
-                Toast.makeText(NewInputChat.this.getContext(),"click add", Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void OnClickCustomEmotions(View v, String path) {
-                Toast.makeText(NewInputChat.this.getContext(),"click custom", Toast.LENGTH_SHORT).show();
-            }
-        });
+        // 1 构建需要显示的表情结构
+        List<EmotionData> emotionList = new ArrayList<>();
+        // 1.1 emoji emotion
+        TypedArray icons = getContext().getResources().obtainTypedArray(R.array.emotion_array);
+        List<Emoji> emojiList = new ArrayList<>();
+        int[] mDrawableResId;
+        mDrawableResId = new int[icons.length()];
+        int[] intStringArray = getContext().getResources().getIntArray(R.array.emotion_dec_int);
+        for (int i = 0; i < icons.length(); ++i) {
+            Emoji emoji = new Emoji(icons.getResourceId(i, 0), intStringArray[i]);
+            emojiList.add(emoji);
+        }
+        EmotionData data = new EmotionData<Emoji>(emojiList,
+                ResourceUtil.getResourceUriString(getContext(), R.drawable.u1f004),
+                EmotionData.EmotionCategory.emoji,
+                new Emoji(R.drawable.bx_emotion_delete, -1), 3, 7);
+//                3, 7);
+        emotionList.add(data);
+        // 1.2 custom emotion
+        String temp = ResourceUtil.getResourceUriString(getContext(), R.mipmap.ic_launcher);
+        List<String> customList = new ArrayList<>();
+        customList.add(temp);
+        customList.add(temp);
+        customList.add(temp);
+        customList.add(temp);
+        data = new EmotionData<String>(customList,
+                ResourceUtil.getResourceUriString(getContext(), R.mipmap.ic_launcher),
+                EmotionData.EmotionCategory.image, temp, 2, 4);
+//                EmotionData.EmotionCategory.image, 2, 4);
+        emotionList.add(data);
+
+        emotionView.setEmotionDataList(emotionList);
+        // 2 设置相应的监听器
+//        emotionView.setCustomEmotionListener(new CustomEmotionAdapter2.CustomEmotion() {
+//            @Override
+//            public void OnAddCustomEmotions() {
+//                Toast.makeText(NewInputChat.this.getContext(), "click add", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            @Override
+//            public void OnClickCustomEmotions(View v, String path) {
+//                Toast.makeText(NewInputChat.this.getContext(), "click custom", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
         init();
         return rootView;
