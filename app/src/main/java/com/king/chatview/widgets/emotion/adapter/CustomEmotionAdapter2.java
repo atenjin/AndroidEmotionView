@@ -16,14 +16,18 @@ import com.king.chatview.R;
 import com.king.chatview.widgets.emotion.EmotionView;
 import com.king.chatview.widgets.emotion.data.EmotionData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Administrator on 2015/11/13.
  */
 public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapter2.CustomEmotionListAdapter> {
-//    private static final int PATH_TAG = -1002;
+    /**
+     * 可能会添加uniqueItem至list的index为0的在该adapter操作的List副本
+     */
     private List<String> customImgPathList;
+    private List<CustomEmotionListAdapter> pageAdapterList = new ArrayList<>();
 
     public CustomEmotionAdapter2(Context context, ViewPager viewPager, EmotionData<String> emotionData, EmotionView.EmotionClickListener emotionClickListener) {
         super(context, viewPager, emotionData, emotionClickListener);
@@ -32,11 +36,26 @@ public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapt
 
     private void initData(EmotionData<String> emotionData) {
         if (emotionData.getUniqueItem() != null) {
-            List<String> list = emotionData.getEmotionList();
-            list.add(0, emotionData.getUniqueItem());
-            emotionData.setEmotionList(list);
+            customImgPathList = new ArrayList<>(emotionData.getEmotionList());
+            customImgPathList.add(0, emotionData.getUniqueItem());
+        } else {
+            customImgPathList = emotionData.getEmotionList();
         }
-        customImgPathList = emotionData.getEmotionList();
+    }
+
+    @Override
+    protected int calcPageNumber(EmotionData emotionData, int pageCount) {
+        int listSize = emotionData.getEmotionList().size();
+        if (emotionData.getUniqueItem() != null)
+            listSize++;
+
+        int pageNumber;
+        if (listSize % mPageCount > 0)
+            pageNumber = listSize / mPageCount + 1;
+        else {
+            pageNumber = listSize / mPageCount;
+        }
+        return pageNumber;
     }
 
     @NonNull
@@ -50,21 +69,38 @@ public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapt
     @NonNull
     @Override
     public CustomEmotionListAdapter createListAdapter(int currentPageNumber) {
-        return new CustomEmotionListAdapter(currentPageNumber);
+        CustomEmotionListAdapter adapter = new CustomEmotionListAdapter(currentPageNumber);
+        pageAdapterList.add(adapter);
+        return adapter;
     }
 
     @Override
     public CustomEmotionListAdapter bingData(CustomEmotionListAdapter listAdapter, int position) {
-        int startP = position * 8;
-        int endP = (position + 1) * 8 > customImgPathList.size() ? customImgPathList.size() : (position + 1) * 8;
+        int startP = position * mPageCount;
+        int endP = (position + 1) * mPageCount > customImgPathList.size() ? customImgPathList.size() : (position + 1) * mPageCount;
         String[] list = customImgPathList.subList(startP, endP).toArray(new String[endP - startP]);
         listAdapter.setData(list);
         return listAdapter;
     }
 
     @Override
+    public EmotionData<String> getEmotionData() {
+        return mEmotionData;
+    }
+
+    @Override
+    public void setEmotionData(EmotionData emotionData) {
+        List<String> list = emotionData.getEmotionList();
+        customImgPathList = new ArrayList<>(list);
+        customImgPathList.add(0, (String) emotionData.getUniqueItem());
+        notifyDataSetChanged();
+        for (CustomEmotionListAdapter adapter : pageAdapterList) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
     public void onClick(View v) {
-//        Object path = v.getTag(CustomEmotionAdapter2.PATH_TAG);
         int index = (Integer) v.getTag(CustomEmotionAdapter2.INDEX_TAG);
         if (mEmotionClickListener != null) {
             if (mEmotionData.getUniqueItem() != null) {
@@ -72,19 +108,12 @@ public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapt
                     mEmotionClickListener.OnUniqueEmotionClick(mEmotionData.getUniqueItem(), v, mEmotionData.getCategory());
                     return;
                 }
+                index--;
             }
             mEmotionClickListener.OnEmotionClick(mEmotionData.getEmotionList().get(index), v, mEmotionData.getCategory());
         }
     }
 
-    public List<String> getImgList() {
-        return customImgPathList;
-    }
-
-    public void setImgList(List<String> customImgPathList) {
-        this.customImgPathList = customImgPathList;
-        notifyDataSetChanged();
-    }
 
     class CustomEmotionListAdapter extends BaseEmotionAdapter.BaseListAdapter {
         private String[] pathList;
@@ -119,7 +148,6 @@ public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapt
             if (pathList == null) {
                 return containerLayout;
             }
-            // tag 中保留了这张图片的路径
             if (pathList[position] != null) {
                 ImageButton img = new ImageButton(mContext);
                 img.setBackgroundResource(R.drawable.sticker_style);
@@ -133,7 +161,6 @@ public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapt
                 // 加载
                 Glide.with(mContext).load(pathList[position]).centerCrop().into(img);
 
-//                img.setTag(CustomEmotionAdapter2.PATH_TAG, pathList[position]);
                 // 因为特殊元素是直接插入到list的第一个位置上，所以这里不需要区分是否是特殊元素
                 int index = mCurrentPageNumber * mPageCount + position;
                 img.setTag(CustomEmotionAdapter2.INDEX_TAG, index);
@@ -143,4 +170,5 @@ public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapt
             return containerLayout;
         }
     }
+
 }

@@ -161,7 +161,6 @@ public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAd
 
     public abstract T bingData(T listAdapter, int position);
 
-
     protected GridView setGridViewMinimumHeight(GridView gridView, int height) {
         gridView.setMinimumHeight(height);
         return gridView;
@@ -199,4 +198,9 @@ public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAd
         GridView gridView;
         T adapter;
     }
+
+    public abstract EmotionData getEmotionData();
+
+    public abstract void setEmotionData(EmotionData emotionData);
+
 }

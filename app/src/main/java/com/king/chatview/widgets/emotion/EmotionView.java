@@ -21,7 +21,6 @@ import com.king.chatview.widgets.emotion.item.StickerItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by Administrator on 2015/11/11.
@@ -42,6 +41,7 @@ public class EmotionView extends LinearLayout {
         }
     }
 
+
     public interface EmotionClickListener {
         void OnEmotionClick(Object emotionData, View v, EmotionData.EmotionCategory category);
 
@@ -52,7 +52,6 @@ public class EmotionView extends LinearLayout {
 
     private List<EmotionData> emotionDataList;
 
-    //    private CustomEmotionAdapter2.CustomEmotion customEmotion;
     private RelativeLayout emotionLinearLayout;
     private ViewPager emotionViewPager;
     private CustomIndicator emotionIndicator;
@@ -77,7 +76,6 @@ public class EmotionView extends LinearLayout {
     public EmotionView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
-//        init(context);
     }
 
     private void init(Context context, List<EmotionData> emotionDataList) {
@@ -164,7 +162,10 @@ public class EmotionView extends LinearLayout {
         }
     }
 
+    private int currentStickerIndex = 0;
+
     private void switchOtherStickers(int index) {
+        this.currentStickerIndex = index;
         this.setEmotionAdapter(emotionAdapterList.get(index));
     }
 
@@ -173,13 +174,22 @@ public class EmotionView extends LinearLayout {
         showEmotionIndicator(adapter.getCount());
     }
 
+    public void setEmotionDataList(List<EmotionData> emotionDataList) {
+        this.emotionDataList = emotionDataList;
+        init(mContext, emotionDataList);
+    }
+
     public List<EmotionData> getEmotionDataList() {
         return emotionDataList;
     }
 
-    public void setEmotionDataList(List<EmotionData> emotionDataList) {
-        this.emotionDataList = emotionDataList;
-        init(mContext, emotionDataList);
+    public void modifyEmotionDataList(EmotionData data, int position) {
+        emotionDataList.set(position, data);
+        BaseEmotionAdapter adapter = createEmotionAdapter(data);
+        emotionAdapterList.set(position, adapter);
+        if (position == currentStickerIndex) {
+            setEmotionAdapter(adapter);
+        }
     }
 
     private BaseEmotionAdapter createEmotionAdapter(EmotionData data) {

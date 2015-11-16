@@ -26,6 +26,7 @@ import com.king.chatview.tools.DImenUtil;
 import com.king.chatview.utils.BundleArguments;
 import com.king.chatview.utils.ResourceUtil;
 import com.king.chatview.widgets.emotion.EmotionView;
+import com.king.chatview.widgets.emotion.adapter.CustomEmotionAdapter2;
 import com.king.chatview.widgets.emotion.adapter.EmotionAdapter;
 import com.king.chatview.widgets.emotion.data.Emoji;
 import com.king.chatview.widgets.emotion.data.EmotionData;
@@ -155,6 +156,8 @@ public class NewInputChat extends BaseFragment {
         customList.add(temp);
         customList.add(temp);
         customList.add(temp);
+        customList.add(temp);
+        customList.add(temp);
         data = new EmotionData<String>(customList,
                 ResourceUtil.getResourceUriString(getContext(), R.mipmap.ic_launcher),
                 EmotionData.EmotionCategory.image, temp, 2, 4);
@@ -178,6 +181,7 @@ public class NewInputChat extends BaseFragment {
                         Toast.makeText(getContext(),
                                 "path:" + path,
                                 Toast.LENGTH_SHORT).show();
+
                     default:
                 }
             }
@@ -196,6 +200,15 @@ public class NewInputChat extends BaseFragment {
                         Toast.makeText(getContext(), "uniqueItem: " +
                                         "path:" + path,
                                 Toast.LENGTH_SHORT).show();
+
+                        String temp = ResourceUtil.getResourceUriString(getContext(), R.mipmap.ic_launcher);
+                        List<String> customList = emotionView.getEmotionDataList().get(1).getEmotionList();
+                        customList.add(temp);
+                        EmotionData<String> data = new EmotionData<String>(customList,
+                                ResourceUtil.getResourceUriString(getContext(), R.mipmap.ic_launcher),
+                                EmotionData.EmotionCategory.image, temp, 2, 4);
+
+                        emotionView.modifyEmotionDataList(data, 1);
                     default:
                 }
             }

@@ -37,8 +37,8 @@ public class EmotionData<T> {
 
     public void setUniqueItem(T uniqueItem) {
         this.uniqueItem = uniqueItem;
-        if (emotionList != null)
-            emotionList.add(0, uniqueItem);
+//        if (emotionList != null)
+//            emotionList.add(0, uniqueItem);
     }
 
     public T getUniqueItem() {

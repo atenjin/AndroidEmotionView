@@ -86,6 +86,16 @@ public class EmotionAdapter2 extends BaseEmotionAdapter<EmotionAdapter2.EmotionL
     }
 
     @Override
+    public EmotionData getEmotionData() {
+        return mEmotionData;
+    }
+
+    @Override
+    public void setEmotionData(EmotionData emotionData) {
+        this.mEmotionData = emotionData;
+    }
+
+    @Override
     public void onClick(View v) {
         if (mEmotionClickListener == null)
             return;
