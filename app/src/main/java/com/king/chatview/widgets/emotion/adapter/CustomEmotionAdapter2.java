@@ -22,6 +22,7 @@ import java.util.List;
  * Created by Administrator on 2015/11/13.
  */
 public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapter2.CustomEmotionListAdapter> {
+//    private static final int PATH_TAG = -1002;
     private List<String> customImgPathList;
 
     public CustomEmotionAdapter2(Context context, ViewPager viewPager, EmotionData<String> emotionData, EmotionView.EmotionClickListener emotionClickListener) {
@@ -48,8 +49,8 @@ public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapt
 
     @NonNull
     @Override
-    public CustomEmotionListAdapter createListAdapter() {
-        return new CustomEmotionListAdapter();
+    public CustomEmotionListAdapter createListAdapter(int currentPageNumber) {
+        return new CustomEmotionListAdapter(currentPageNumber);
     }
 
     @Override
@@ -63,18 +64,16 @@ public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapt
 
     @Override
     public void onClick(View v) {
-        Object path = v.getTag();
-        if (path != null && mEmotionClickListener != null) {
-            String pathString = (String) path;
+//        Object path = v.getTag(CustomEmotionAdapter2.PATH_TAG);
+        int index = (Integer) v.getTag(CustomEmotionAdapter2.INDEX_TAG);
+        if (mEmotionClickListener != null) {
             if (mEmotionData.getUniqueItem() != null) {
-                if (pathString.equals(mEmotionData.getUniqueItem())) {
-//                    mEmotionClickListener.OnUniqueEmotionClick();
-                } else {
-//                    mEmotionClickListener.OnEmotionClick();
+                if (index == 0) {
+                    mEmotionClickListener.OnUniqueEmotionClick(mEmotionData.getUniqueItem(), v, mEmotionData.getCategory());
+                    return;
                 }
-            } else {
-//                mEmotionClickListener.OnEmotionClick();
             }
+            mEmotionClickListener.OnEmotionClick(mEmotionData.getEmotionList().get(index), v, mEmotionData.getCategory());
         }
     }
 
@@ -89,6 +88,10 @@ public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapt
 
     class CustomEmotionListAdapter extends BaseEmotionAdapter.BaseListAdapter {
         private String[] pathList;
+
+        CustomEmotionListAdapter(int currentPageNumber) {
+            super(currentPageNumber);
+        }
 
         public void setData(String[] pathList) {
             this.pathList = pathList;
@@ -129,7 +132,12 @@ public class CustomEmotionAdapter2 extends BaseEmotionAdapter<CustomEmotionAdapt
                 img.setOnClickListener(CustomEmotionAdapter2.this);
                 // 加载
                 Glide.with(mContext).load(pathList[position]).centerCrop().into(img);
-                img.setTag(pathList[position]);
+
+//                img.setTag(CustomEmotionAdapter2.PATH_TAG, pathList[position]);
+                // 因为特殊元素是直接插入到list的第一个位置上，所以这里不需要区分是否是特殊元素
+                int index = mCurrentPageNumber * mPageCount + position;
+                img.setTag(CustomEmotionAdapter2.INDEX_TAG, index);
+
                 containerLayout.addView(img);
             }
             return containerLayout;

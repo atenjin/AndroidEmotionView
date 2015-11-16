@@ -18,12 +18,20 @@ import com.king.chatview.widgets.emotion.data.EmotionData;
  */
 public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAdapter> extends PagerAdapter implements View.OnClickListener {
 
+    protected static final int INDEX_TAG = -1001;
+
     protected Context mContext;
     protected ViewPager mEmotionViewPager;
     protected EmotionData mEmotionData;
     protected EmotionView.EmotionClickListener mEmotionClickListener;
 
+    /**
+     * 表示在横向上，一个元素能够分得到的长度大小(包含margin&padding)
+     */
     protected int mSize;
+    /**
+     * 表示总共有几页
+     */
     protected int mCount;
 
     protected int viewPageWidth;
@@ -32,6 +40,9 @@ public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAd
 
     protected int mRow;
     protected int mColumn;
+    /**
+     * 表示一页有几个元素
+     */
     protected int mPageCount;
 
     public void setEmotionClickListener(EmotionView.EmotionClickListener clickListener) {
@@ -114,7 +125,6 @@ public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAd
         ViewHolder holder;
         if (this.mViewHolder == null) {
 
-
             gridView = instantiateGridView();
             if (gridView == null)
                 throw new NullPointerException("gridView 必须被实例化");
@@ -124,10 +134,9 @@ public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAd
             gridView = setGridViewMinimumHeight(gridView, viewPageHeight);
             setGridViewSpacing(gridView, viewPageHeight, viewPageWidth);
 
-            adapter = createListAdapter();
+            adapter = createListAdapter(position);
             if (adapter == null)
                 throw new NullPointerException("adapter 必须被实例化");
-
 
             holder = new ViewHolder();
             holder.gridView = gridView;
@@ -148,7 +157,7 @@ public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAd
     public abstract GridView instantiateGridView();
 
     @NonNull
-    public abstract T createListAdapter();
+    public abstract T createListAdapter(int currentPageNumber);
 
     public abstract T bingData(T listAdapter, int position);
 
@@ -171,11 +180,19 @@ public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAd
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        this.mViewHolder = ((ViewHolder) object);
+        this.mViewHolder = (ViewHolder) object;
         container.removeView(this.mViewHolder.gridView);
     }
 
     public abstract class BaseListAdapter extends BaseAdapter {
+        /**
+         * 表示当前的adapter处在该外层adapter的第几页上
+         */
+        protected int mCurrentPageNumber;
+
+        BaseListAdapter(int currentPageNumber) {
+            this.mCurrentPageNumber = currentPageNumber;
+        }
     }
 
     protected class ViewHolder {

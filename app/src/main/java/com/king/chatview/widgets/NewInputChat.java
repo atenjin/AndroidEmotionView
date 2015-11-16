@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.king.chatview.R;
 import com.king.chatview.fragment.BaseFragment;
@@ -131,14 +132,11 @@ public class NewInputChat extends BaseFragment {
 
         // TODO 与原来不同的部分
         emotionView = (EmotionView) rootView.findViewById(R.id.emotion_view);
-
         // 1 构建需要显示的表情结构
         List<EmotionData> emotionList = new ArrayList<>();
         // 1.1 emoji emotion
         TypedArray icons = getContext().getResources().obtainTypedArray(R.array.emotion_array);
         List<Emoji> emojiList = new ArrayList<>();
-        int[] mDrawableResId;
-        mDrawableResId = new int[icons.length()];
         int[] intStringArray = getContext().getResources().getIntArray(R.array.emotion_dec_int);
         for (int i = 0; i < icons.length(); ++i) {
             Emoji emoji = new Emoji(icons.getResourceId(i, 0), intStringArray[i]);
@@ -165,17 +163,43 @@ public class NewInputChat extends BaseFragment {
 
         emotionView.setEmotionDataList(emotionList);
         // 2 设置相应的监听器
-//        emotionView.setCustomEmotionListener(new CustomEmotionAdapter2.CustomEmotion() {
-//            @Override
-//            public void OnAddCustomEmotions() {
-//                Toast.makeText(NewInputChat.this.getContext(), "click add", Toast.LENGTH_SHORT).show();
-//            }
-//
-//            @Override
-//            public void OnClickCustomEmotions(View v, String path) {
-//                Toast.makeText(NewInputChat.this.getContext(), "click custom", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        emotionView.setEmotionClickListener(new EmotionView.EmotionClickListener() {
+            @Override
+            public void OnEmotionClick(Object emotionData, View v, EmotionData.EmotionCategory category) {
+                switch (category) {
+                    case emoji:
+                        Emoji emoji = (Emoji) emotionData;
+                        Toast.makeText(getContext(),
+                                "decInt:" + emoji.getDecInt() + " drawableid" + emoji.getDrawableResId(),
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case image:
+                        String path = (String) emotionData;
+                        Toast.makeText(getContext(),
+                                "path:" + path,
+                                Toast.LENGTH_SHORT).show();
+                    default:
+                }
+            }
+
+            @Override
+            public void OnUniqueEmotionClick(Object uniqueItem, View v, EmotionData.EmotionCategory category) {
+                switch (category) {
+                    case emoji:
+                        Emoji emoji = (Emoji) uniqueItem;
+                        Toast.makeText(getContext(), "uniqueItem: " +
+                                        "decInt:" + emoji.getDecInt() + " drawableid" + emoji.getDrawableResId(),
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case image:
+                        String path = (String) uniqueItem;
+                        Toast.makeText(getContext(), "uniqueItem: " +
+                                        "path:" + path,
+                                Toast.LENGTH_SHORT).show();
+                    default:
+                }
+            }
+        });
 
         init();
         return rootView;

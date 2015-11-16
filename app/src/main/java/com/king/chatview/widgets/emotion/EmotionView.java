@@ -21,6 +21,7 @@ import com.king.chatview.widgets.emotion.item.StickerItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Administrator on 2015/11/11.
@@ -33,12 +34,18 @@ public class EmotionView extends LinearLayout {
 
     public void setEmotionClickListener(EmotionClickListener emotionClickListener) {
         this.emotionClickListener = emotionClickListener;
+        if (emotionAdapterList == null) {
+            throw new NullPointerException("设置监听前必须先设定表情的List");
+        }
+        for (BaseEmotionAdapter adapter : emotionAdapterList) {
+            adapter.setEmotionClickListener(emotionClickListener);
+        }
     }
 
     public interface EmotionClickListener {
-        void OnEmotionClick(EmotionData emotionData, View v);
+        void OnEmotionClick(Object emotionData, View v, EmotionData.EmotionCategory category);
 
-        void OnUniqueEmotionClick(EmotionData emotionData, View v);
+        void OnUniqueEmotionClick(Object uniqueItem, View v, EmotionData.EmotionCategory category);
     }
 
     private EmotionClickListener emotionClickListener;
@@ -86,11 +93,9 @@ public class EmotionView extends LinearLayout {
         // 暂时未使用
         addStickers = (ImageView) findViewById(R.id.add_stickers);
 
-
         // 重构
         // 初始化tab
         initStickers(emotionDataList);
-
 
         // 点开界面第一个tab元素必须被初始化
         emotionAdapterList = new ArrayList<>();
@@ -104,12 +109,6 @@ public class EmotionView extends LinearLayout {
             emotionAdapterList.add(emotionAdapter);
             index++;
         }
-//        BaseEmotionAdapter firstEmotionAdapter = this.createEmotionAdapter(emotionDataList.get(0));
-//        emotionAdapterList.add(firstEmotionAdapter);
-// 先暂时做延迟化初始处理
-//        emotionAdapter = new EmotionAdapter2(context, emotionViewPager);
-//        emotionAdapterList.add(emotionAdapter);
-//        emotionAdapterList.add(customAdapter);
 
         emotionViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

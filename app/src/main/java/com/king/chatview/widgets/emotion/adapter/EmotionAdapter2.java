@@ -15,6 +15,7 @@ import com.king.chatview.widgets.emotion.data.Emoji;
 import com.king.chatview.widgets.emotion.data.EmotionData;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Administrator on 2015/11/12.
@@ -68,8 +69,8 @@ public class EmotionAdapter2 extends BaseEmotionAdapter<EmotionAdapter2.EmotionL
 
     @NonNull
     @Override
-    public EmotionListAdapter createListAdapter() {
-        return new EmotionListAdapter();
+    public EmotionListAdapter createListAdapter(int currentPageNumber) {
+        return new EmotionListAdapter(currentPageNumber);
     }
 
     @Override
@@ -86,30 +87,23 @@ public class EmotionAdapter2 extends BaseEmotionAdapter<EmotionAdapter2.EmotionL
 
     @Override
     public void onClick(View v) {
-        int resId = (Integer) v.getTag(R.id.emoji_tag_id);
-        // 暂时这样
-//        if (editText == null)
-//            return;
-//        if (resId == -1) {
-//            //点击delete,执行删除操作
-//            KeyEvent event = new KeyEvent(0, 0, 0, KeyEvent.KEYCODE_DEL, 0, 0, 0, 0, KeyEvent.KEYCODE_ENDCALL);
-//            editText.dispatchKeyEvent(event);
-//        } else if (resId != 0) {
-//            BitmapFactory.Options options = new BitmapFactory.Options();
-//            options.outHeight = 5;
-//            options.outWidth = 5;
-//            Bitmap emojiExpression = BitmapFactory.decodeResource(mContext.getResources(), resId, options);
-//            String emojiPhonyCode = v.getTag(R.id.emoji_tag_code).toString();
-//            ImageSpan imageSpan = new ImageSpan(mContext, emojiExpression);
-//            SpannableString spannableString = new SpannableString(emojiPhonyCode);
-//            spannableString.setSpan(imageSpan, 0, spannableString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-//            editText.append(spannableString);
-//        }
+        if (mEmotionClickListener == null)
+            return;
+        int index = (Integer) v.getTag(BaseEmotionAdapter.INDEX_TAG);
+        if (index == -1) {
+            mEmotionClickListener.OnUniqueEmotionClick(mEmotionData.getUniqueItem(), v, mEmotionData.getCategory());
+        } else {
+            mEmotionClickListener.OnEmotionClick(mEmotionData.getEmotionList().get(index), v, mEmotionData.getCategory());
+        }
     }
 
     class EmotionListAdapter extends BaseEmotionAdapter.BaseListAdapter {
         int[] resIds;
         int[] intStringArray;
+
+        EmotionListAdapter(int currentPageNumber) {
+            super(currentPageNumber);
+        }
 
         public void setData(int[] resIds, int[] intStringArray) {
             this.resIds = resIds;
@@ -141,23 +135,29 @@ public class EmotionAdapter2 extends BaseEmotionAdapter<EmotionAdapter2.EmotionL
             img.setTag(R.id.emoji_tag_id, this.resIds[position]);
             img.setTag(R.id.emoji_tag_code, new String(Character.toChars(intStringArray[position])));
 
+
             img.setVisibility(View.INVISIBLE);
             img.setOnClickListener(EmotionAdapter2.this);
 
+            int index = 0;
             if (mEmotionData.getUniqueItem() == null) {
                 img.setImageResource(this.resIds[position]);
                 img.setVisibility(View.VISIBLE);
+                index = mCurrentPageNumber * mPageCount + position;
             } else {
                 if (this.resIds[position] != 0) {
                     img.setImageResource(this.resIds[position]);
                     img.setVisibility(View.VISIBLE);
+                    index = mCurrentPageNumber * mPageCount + position;
                 } else if (position == this.resIds.length - 1) {
                     img.setTag(R.id.emoji_tag_id, -1);
                     img.setTag(R.id.emoji_tag_code, "delete");
                     img.setImageResource(((Emoji) mEmotionData.getUniqueItem()).getDrawableResId());
                     img.setVisibility(View.VISIBLE);
+                    index = -1;
                 }
             }
+            img.setTag(BaseEmotionAdapter.INDEX_TAG, index);
             return img;
         }
     }
