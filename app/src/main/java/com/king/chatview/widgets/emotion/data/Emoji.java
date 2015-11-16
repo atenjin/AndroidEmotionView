@@ -1,9 +1,11 @@
 package com.king.chatview.widgets.emotion.data;
 
+import android.net.Uri;
+
 /**
  * Created by Administrator on 2015/11/15.
  */
-public class Emoji {
+public class Emoji extends Emoticon {
     private int drawableResId;
     private int decInt;
 
@@ -12,19 +14,23 @@ public class Emoji {
         this.decInt = decInt;
     }
 
-    public int getDrawableResId() {
+    @Override
+    public int getResourceId() {
         return drawableResId;
     }
 
-    public void setDrawableResId(int drawableResId) {
-        this.drawableResId = drawableResId;
+    @Override
+    public String getImagePath() {
+        return null;
     }
 
-    public int getDecInt() {
-        return decInt;
+    @Override
+    public Uri getUri() {
+        return null;
     }
 
-    public void setDecInt(int decInt) {
-        this.decInt = decInt;
+    @Override
+    public String getDesc() {
+        return new String(Character.toChars(decInt));
     }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2015/11/14.
  */
-public class EmotionData<T> {
+public class EmotionData{
 
     public String getStickerIcon() {
         return stickerIcon;
@@ -15,12 +15,12 @@ public class EmotionData<T> {
         emoji, image
     }
 
-    private List<T> emotionList;
+    private List<Emoticon> emotionList;
     private String stickerIcon;
     private EmotionCategory category;
     private int row;
     private int column;
-    private T uniqueItem;
+    private Emoticon uniqueItem;
 
     /**
      * EmotionView所展示的数据结构
@@ -30,7 +30,7 @@ public class EmotionData<T> {
      * @param row 需要显示的行
      * @param column 需要显示的列
      */
-    public EmotionData(List<T> emotionList, String stickerIcon, EmotionCategory category, int row, int column) {
+    public EmotionData(List<Emoticon> emotionList, String stickerIcon, EmotionCategory category, int row, int column) {
         this.emotionList = emotionList;
         this.stickerIcon = stickerIcon;
         this.category = category;
@@ -47,20 +47,20 @@ public class EmotionData<T> {
      * @param row 需要显示的行
      * @param column 需要显示的列
      */
-    public EmotionData(List<T> emotionList, String stickerIcon, EmotionCategory category, T uniqueItem, int row, int column) {
+    public EmotionData(List<Emoticon> emotionList, String stickerIcon, EmotionCategory category, Emoticon uniqueItem, int row, int column) {
         this(emotionList, stickerIcon, category, row, column);
         this.uniqueItem = uniqueItem;
     }
 
-    public T getUniqueItem() {
+    public Emoticon getUniqueItem() {
         return uniqueItem;
     }
 
-    public List<T> getEmotionList() {
+    public List<Emoticon> getEmotionList() {
         return emotionList;
     }
 
-    public void setEmotionList(List<T> emotionList) {
+    public void setEmotionList(List<Emoticon> emotionList) {
         this.emotionList = emotionList;
     }
 

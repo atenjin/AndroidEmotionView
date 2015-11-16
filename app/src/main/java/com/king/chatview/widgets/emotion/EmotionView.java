@@ -16,6 +16,7 @@ import com.king.chatview.widgets.CustomIndicator;
 import com.king.chatview.widgets.emotion.adapter.BaseEmotionAdapter;
 import com.king.chatview.widgets.emotion.adapter.CustomEmotionAdapter;
 import com.king.chatview.widgets.emotion.adapter.EmotionAdapter;
+import com.king.chatview.widgets.emotion.data.Emoticon;
 import com.king.chatview.widgets.emotion.data.EmotionData;
 import com.king.chatview.widgets.emotion.item.StickerItem;
 
@@ -28,9 +29,9 @@ import java.util.List;
 public class EmotionView extends LinearLayout {
 
     public interface EmotionClickListener {
-        void OnEmotionClick(Object emotionData, View v, EmotionData.EmotionCategory category);
+        void OnEmotionClick(Emoticon emotionData, View v, EmotionData.EmotionCategory category);
 
-        void OnUniqueEmotionClick(Object uniqueItem, View v, EmotionData.EmotionCategory category);
+        void OnUniqueEmotionClick(Emoticon uniqueItem, View v, EmotionData.EmotionCategory category);
     }
 
     private EmotionClickListener emotionClickListener;

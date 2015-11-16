@@ -26,8 +26,11 @@ import com.king.chatview.tools.DImenUtil;
 import com.king.chatview.utils.BundleArguments;
 import com.king.chatview.utils.ResourceUtil;
 import com.king.chatview.widgets.emotion.EmotionView;
+import com.king.chatview.widgets.emotion.data.CustomEmoji;
 import com.king.chatview.widgets.emotion.data.Emoji;
+import com.king.chatview.widgets.emotion.data.Emoticon;
 import com.king.chatview.widgets.emotion.data.EmotionData;
+import com.king.chatview.widgets.emotion.data.UniqueEmoji;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -90,7 +93,7 @@ public class InputChat extends BaseFragment {
     //this will be called at first, so we must make initial data there to avoid initial data being reset. !!!
     public InputChat() {
         inputChatListener = null;
-        items = new ArrayList<ChatToolBox.ChatToolItem>();
+        items = new ArrayList<>();
         items.add(new ToolPhoto());
         items.add(new ToolCamera());
         items.add(new ToolPosition());
@@ -130,30 +133,29 @@ public class InputChat extends BaseFragment {
         List<EmotionData> emotionList = new ArrayList<>();
         // 1.1 emoji emotion
         TypedArray icons = getContext().getResources().obtainTypedArray(R.array.emotion_array);
-        List<Emoji> emojiList = new ArrayList<>();
+        List<Emoticon> emojiList = new ArrayList<>();
         int[] intStringArray = getContext().getResources().getIntArray(R.array.emotion_dec_int);
         for (int i = 0; i < icons.length(); ++i) {
-            Emoji emoji = new Emoji(icons.getResourceId(i, 0), intStringArray[i]);
+            Emoticon emoji = new Emoji(icons.getResourceId(i, 0), intStringArray[i]);
             emojiList.add(emoji);
         }
-        EmotionData data = new EmotionData<Emoji>(emojiList,
+        EmotionData data = new EmotionData(emojiList,
                 ResourceUtil.getResourceUriString(getContext(), R.drawable.u1f004),
                 EmotionData.EmotionCategory.emoji,
-                new Emoji(R.drawable.bx_emotion_delete, -1), 3, 7);
+                new UniqueEmoji(R.drawable.bx_emotion_delete), 3, 7);
 //                3, 7);
         emotionList.add(data);
         // 1.2 custom emotion
         String temp = ResourceUtil.getResourceUriString(getContext(), R.mipmap.ic_launcher);
-        List<String> customList = new ArrayList<>();
-        customList.add(temp);
-        customList.add(temp);
-        customList.add(temp);
-        customList.add(temp);
-        customList.add(temp);
-        customList.add(temp);
-        data = new EmotionData<String>(customList,
+        List<Emoticon> customList = new ArrayList<>();
+        customList.add(new CustomEmoji(temp));
+        customList.add(new CustomEmoji(temp));
+        customList.add(new CustomEmoji(temp));
+
+        data = new EmotionData(customList,
                 ResourceUtil.getResourceUriString(getContext(), R.mipmap.ic_launcher),
-                EmotionData.EmotionCategory.image, temp, 2, 4);
+                EmotionData.EmotionCategory.image,
+                new UniqueEmoji(temp), 2, 4);
 //                EmotionData.EmotionCategory.image, 2, 4);
         emotionList.add(data);
         // 以上即在填充emotionView前所需要完成的结构内容
@@ -161,44 +163,39 @@ public class InputChat extends BaseFragment {
         // 2 设置相应的监听器
         emotionView.setEmotionClickListener(new EmotionView.EmotionClickListener() {
             @Override
-            public void OnEmotionClick(Object emotionData, View v, EmotionData.EmotionCategory category) {
+            public void OnEmotionClick(Emoticon emotionData, View v, EmotionData.EmotionCategory category) {
                 switch (category) {
                     case emoji:
-                        Emoji emoji = (Emoji) emotionData;
                         Toast.makeText(getContext(),
-                                "decInt:" + emoji.getDecInt() + " drawableid" + emoji.getDrawableResId(),
+                                "decInt:" + emotionData.getDesc() + " drawableid" + emotionData.getResourceId(),
                                 Toast.LENGTH_SHORT).show();
                         break;
                     case image:
-                        String path = (String) emotionData;
                         Toast.makeText(getContext(),
-                                "path:" + path,
+                                "path:" + emotionData.getDesc(),
                                 Toast.LENGTH_SHORT).show();
                     default:
                 }
             }
 
             @Override
-            public void OnUniqueEmotionClick(Object uniqueItem, View v, EmotionData.EmotionCategory category) {
+            public void OnUniqueEmotionClick(Emoticon uniqueItem, View v, EmotionData.EmotionCategory category) {
                 switch (category) {
                     case emoji:
-                        Emoji emoji = (Emoji) uniqueItem;
                         Toast.makeText(getContext(), "uniqueItem: " +
-                                        "decInt:" + emoji.getDecInt() + " drawableid" + emoji.getDrawableResId(),
+                                        "decInt:" + uniqueItem.getDesc() + " drawableid" + uniqueItem.getResourceId(),
                                 Toast.LENGTH_SHORT).show();
                         break;
                     case image:
-                        String path = (String) uniqueItem;
-                        Toast.makeText(getContext(), "uniqueItem: " +
-                                        "path:" + path,
+                        Toast.makeText(getContext(), "uniqueItem: " + "path:" + uniqueItem.getDesc(),
                                 Toast.LENGTH_SHORT).show();
 
                         String temp = ResourceUtil.getResourceUriString(getContext(), R.mipmap.ic_launcher);
-                        List<String> customList = emotionView.getEmotionDataList().get(1).getEmotionList();
-                        customList.add(temp);
-                        EmotionData<String> data = new EmotionData<String>(customList,
+                        List<Emoticon> customList = emotionView.getEmotionDataList().get(1).getEmotionList();
+                        customList.add(new CustomEmoji(temp));
+                        EmotionData data = new EmotionData(customList,
                                 ResourceUtil.getResourceUriString(getContext(), R.mipmap.ic_launcher),
-                                EmotionData.EmotionCategory.image, temp, 2, 4);
+                                EmotionData.EmotionCategory.image, new CustomEmoji(temp), 2, 4);
 
                         emotionView.modifyEmotionDataList(data, 1);
                     default:

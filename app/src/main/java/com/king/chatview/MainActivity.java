@@ -3,6 +3,7 @@ package com.king.chatview;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,15 +14,12 @@ import com.king.chatview.widgets.InputChat;
 
 public class MainActivity extends AppCompatActivity {
     private static final String INPUT_CHAT_TAG = "input_chat";
-//    InputChat inputChat;
     InputChat inputChat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_view_new);
-//        inputChat = new InputChat();
-
         inputChat = new InputChat();
 
         inputChat.addToolBoxData(new ToolAd());

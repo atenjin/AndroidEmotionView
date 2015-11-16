@@ -7,17 +7,19 @@ import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 
 import com.king.chatview.widgets.emotion.EmotionView;
+import com.king.chatview.widgets.emotion.data.Emoticon;
 import com.king.chatview.widgets.emotion.data.EmotionData;
 
 /**
  * Created by Administrator on 2015/11/12.
  */
-public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAdapter> extends PagerAdapter implements View.OnClickListener {
-
+public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAdapter> extends PagerAdapter implements GridView.OnItemClickListener {
+    protected static final String EMOTION_ADAPTER_TAG = "emotion_adapter";
     protected static final int INDEX_TAG = -1001;
 
     protected Context mContext;
@@ -124,11 +126,11 @@ public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAd
         T adapter;
         ViewHolder holder;
         if (this.mViewHolder == null) {
-
             gridView = instantiateGridView();
             if (gridView == null)
                 throw new NullPointerException("gridView 必须被实例化");
             gridView.setNumColumns(mColumn);
+
             // emotionViewPager在initData阶段是可能没有高度的(gone) 只有在emotionViewPager进行页面填充的时候才一定会有高度
             int viewPageHeight = getEmotionPageViewHeight();
             gridView = setGridViewMinimumHeight(gridView, viewPageHeight);
@@ -149,12 +151,29 @@ public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAd
         }
         bingData(adapter, position);
         gridView.setAdapter(adapter);
+        gridView.setOnItemClickListener(this);
         container.addView(gridView);
         return holder;
     }
 
     @NonNull
     public abstract GridView instantiateGridView();
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        if (mEmotionClickListener == null)
+            return;
+        Emoticon emoticon = (Emoticon) parent.getItemAtPosition(position);
+        if (emoticon.getDesc().equals(Emoticon.UNIQUE_ITEM)) {
+            mEmotionClickListener.OnUniqueEmotionClick(mEmotionData.getUniqueItem(), view, mEmotionData.getCategory());
+        } else {
+            mEmotionClickListener.OnEmotionClick(emoticon, view, mEmotionData.getCategory());
+        }
+        OnEmoticonClick(emoticon, view);
+    }
+
+    protected void OnEmoticonClick(Emoticon emoticon, View view) {
+    }
 
     @NonNull
     public abstract T createListAdapter(int currentPageNumber);
@@ -177,6 +196,11 @@ public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAd
         return View.MeasureSpec.getSize(mEmotionViewPager.getMeasuredHeight());
     }
 
+
+    public abstract EmotionData getEmotionData();
+
+    public abstract void setEmotionData(EmotionData emotionData);
+
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
         this.mViewHolder = (ViewHolder) object;
@@ -184,14 +208,12 @@ public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAd
     }
 
     public abstract class BaseListAdapter extends BaseAdapter {
-        /**
-         * 表示当前的adapter处在该外层adapter的第几页上
-         */
-        protected int mCurrentPageNumber;
-
-        BaseListAdapter(int currentPageNumber) {
-            this.mCurrentPageNumber = currentPageNumber;
+        @Override
+        public final Object getItem(int position) {
+            return getEmoticonItem(position);
         }
+
+        public abstract Emoticon getEmoticonItem(int position);
     }
 
     protected class ViewHolder {
@@ -199,8 +221,6 @@ public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAd
         T adapter;
     }
 
-    public abstract EmotionData getEmotionData();
 
-    public abstract void setEmotionData(EmotionData emotionData);
 
 }
