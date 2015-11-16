@@ -14,8 +14,8 @@ import com.king.chatview.R;
 import com.king.chatview.tools.DImenUtil;
 import com.king.chatview.widgets.CustomIndicator;
 import com.king.chatview.widgets.emotion.adapter.BaseEmotionAdapter;
-import com.king.chatview.widgets.emotion.adapter.CustomEmotionAdapter2;
-import com.king.chatview.widgets.emotion.adapter.EmotionAdapter2;
+import com.king.chatview.widgets.emotion.adapter.CustomEmotionAdapter;
+import com.king.chatview.widgets.emotion.adapter.EmotionAdapter;
 import com.king.chatview.widgets.emotion.data.EmotionData;
 import com.king.chatview.widgets.emotion.item.StickerItem;
 
@@ -26,21 +26,6 @@ import java.util.List;
  * Created by Administrator on 2015/11/11.
  */
 public class EmotionView extends LinearLayout {
-
-    public EmotionClickListener getEmotionClickListener() {
-        return emotionClickListener;
-    }
-
-    public void setEmotionClickListener(EmotionClickListener emotionClickListener) {
-        this.emotionClickListener = emotionClickListener;
-        if (emotionAdapterList == null) {
-            throw new NullPointerException("设置监听前必须先设定表情的List");
-        }
-        for (BaseEmotionAdapter adapter : emotionAdapterList) {
-            adapter.setEmotionClickListener(emotionClickListener);
-        }
-    }
-
 
     public interface EmotionClickListener {
         void OnEmotionClick(Object emotionData, View v, EmotionData.EmotionCategory category);
@@ -58,6 +43,8 @@ public class EmotionView extends LinearLayout {
 
     private LinearLayout stickersSlider;
     private List<ImageButton> stickerList = new ArrayList<>();
+    private int currentStickerIndex = 0;
+
     // 用来添加表情包的按钮
     private ImageView addStickers;
 
@@ -162,7 +149,18 @@ public class EmotionView extends LinearLayout {
         }
     }
 
-    private int currentStickerIndex = 0;
+    private BaseEmotionAdapter createEmotionAdapter(EmotionData data) {
+        BaseEmotionAdapter adapter = null;
+        switch (data.getCategory()) {
+            case emoji:
+                adapter = new EmotionAdapter(mContext, emotionViewPager, data, emotionClickListener);
+                break;
+            case image:
+                adapter = new CustomEmotionAdapter(mContext, emotionViewPager, data, emotionClickListener);
+            default:
+        }
+        return adapter;
+    }
 
     private void switchOtherStickers(int index) {
         this.currentStickerIndex = index;
@@ -174,6 +172,12 @@ public class EmotionView extends LinearLayout {
         showEmotionIndicator(adapter.getCount());
     }
 
+    /**
+     * EmotionView 在 findViewById 获得引用后所必须调用函数(即为对于该View的初始化)<br/>
+     * 必须位于 setEmotionClickListener 之前<br/>
+     * 必须位于 modifyEmotionDataList 之前<br/>
+     * @param emotionDataList 组织好的用于填充EmotionView的数据结构体
+     */
     public void setEmotionDataList(List<EmotionData> emotionDataList) {
         this.emotionDataList = emotionDataList;
         init(mContext, emotionDataList);
@@ -183,25 +187,29 @@ public class EmotionView extends LinearLayout {
         return emotionDataList;
     }
 
+    public EmotionClickListener getEmotionClickListener() {
+        return emotionClickListener;
+    }
+
+    public void setEmotionClickListener(EmotionClickListener emotionClickListener) {
+        this.emotionClickListener = emotionClickListener;
+        if (emotionAdapterList == null) {
+            throw new NullPointerException("设置监听前必须先设定表情的List");
+        }
+        for (BaseEmotionAdapter adapter : emotionAdapterList) {
+            adapter.setEmotionClickListener(emotionClickListener);
+        }
+    }
+
     public void modifyEmotionDataList(EmotionData data, int position) {
+        if (emotionDataList == null) {
+            throw new NullPointerException("修改List前必须先设定表情的List");
+        }
         emotionDataList.set(position, data);
         BaseEmotionAdapter adapter = createEmotionAdapter(data);
         emotionAdapterList.set(position, adapter);
         if (position == currentStickerIndex) {
             setEmotionAdapter(adapter);
         }
-    }
-
-    private BaseEmotionAdapter createEmotionAdapter(EmotionData data) {
-        BaseEmotionAdapter adapter = null;
-        switch (data.getCategory()) {
-            case emoji:
-                adapter = new EmotionAdapter2(mContext, emotionViewPager, data, emotionClickListener);
-                break;
-            case image:
-                adapter = new CustomEmotionAdapter2(mContext, emotionViewPager, data, emotionClickListener);
-            default:
-        }
-        return adapter;
     }
 }

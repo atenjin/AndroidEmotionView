@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -18,12 +18,16 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.king.chatview.R;
 import com.king.chatview.fragment.BaseFragment;
 import com.king.chatview.tools.DImenUtil;
 import com.king.chatview.utils.BundleArguments;
-import com.king.chatview.widgets.emotion.adapter.EmotionAdapter;
+import com.king.chatview.utils.ResourceUtil;
+import com.king.chatview.widgets.emotion.EmotionView;
+import com.king.chatview.widgets.emotion.data.Emoji;
+import com.king.chatview.widgets.emotion.data.EmotionData;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -32,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2015/11/10.
+ * Created by Administrator on 2015/11/11.
  */
 public class InputChat extends BaseFragment {
     private static final int REQUEST_CODE_TAKE_PHOTO = 1;
@@ -57,11 +61,8 @@ public class InputChat extends BaseFragment {
     protected ChatToolBox toolBox;
     protected VoicePress voicePress;
     protected View voiceView;
-    private LinearLayout emotionLinearLayout;
-    private ViewPager emotionViewPager;
-    private CustomIndicator emotionIndicator;
 
-    private EmotionAdapter emotionAdapter;
+    private EmotionView emotionView;
 
     protected InputChatListener inputChatListener = null;
     private List<ChatToolBox.ChatToolItem> items = new ArrayList<ChatToolBox.ChatToolItem>();
@@ -118,14 +119,92 @@ public class InputChat extends BaseFragment {
     //this will be called when fragment called to show the view, this will be called after creatView().
     @Override
     protected View onInitializeView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = (LinearLayout) inflater.inflate(R.layout.inputchat, container, false);
+        rootView = (LinearLayout) inflater.inflate(R.layout.inputchat_new, container, false);
         buttonView = (LinearLayout) rootView.findViewById(R.id.chat_button);
         toolBox = (ChatToolBox) rootView.findViewById(R.id.chat_tool_box);
         boxView = (OnlyView) rootView.findViewById(R.id.box_view);
 
-        emotionLinearLayout = (LinearLayout) rootView.findViewById(R.id.emotionLinearLayout);
-        emotionViewPager = (ViewPager) rootView.findViewById(R.id.emotionViewPager);
-        emotionIndicator = (CustomIndicator) rootView.findViewById(R.id.emotionIndicator);
+        // EmotionView 开始入口位置
+        emotionView = (EmotionView) rootView.findViewById(R.id.emotion_view);
+        // 1 构建需要显示的表情结构
+        List<EmotionData> emotionList = new ArrayList<>();
+        // 1.1 emoji emotion
+        TypedArray icons = getContext().getResources().obtainTypedArray(R.array.emotion_array);
+        List<Emoji> emojiList = new ArrayList<>();
+        int[] intStringArray = getContext().getResources().getIntArray(R.array.emotion_dec_int);
+        for (int i = 0; i < icons.length(); ++i) {
+            Emoji emoji = new Emoji(icons.getResourceId(i, 0), intStringArray[i]);
+            emojiList.add(emoji);
+        }
+        EmotionData data = new EmotionData<Emoji>(emojiList,
+                ResourceUtil.getResourceUriString(getContext(), R.drawable.u1f004),
+                EmotionData.EmotionCategory.emoji,
+                new Emoji(R.drawable.bx_emotion_delete, -1), 3, 7);
+//                3, 7);
+        emotionList.add(data);
+        // 1.2 custom emotion
+        String temp = ResourceUtil.getResourceUriString(getContext(), R.mipmap.ic_launcher);
+        List<String> customList = new ArrayList<>();
+        customList.add(temp);
+        customList.add(temp);
+        customList.add(temp);
+        customList.add(temp);
+        customList.add(temp);
+        customList.add(temp);
+        data = new EmotionData<String>(customList,
+                ResourceUtil.getResourceUriString(getContext(), R.mipmap.ic_launcher),
+                EmotionData.EmotionCategory.image, temp, 2, 4);
+//                EmotionData.EmotionCategory.image, 2, 4);
+        emotionList.add(data);
+        // 以上即在填充emotionView前所需要完成的结构内容
+        emotionView.setEmotionDataList(emotionList);
+        // 2 设置相应的监听器
+        emotionView.setEmotionClickListener(new EmotionView.EmotionClickListener() {
+            @Override
+            public void OnEmotionClick(Object emotionData, View v, EmotionData.EmotionCategory category) {
+                switch (category) {
+                    case emoji:
+                        Emoji emoji = (Emoji) emotionData;
+                        Toast.makeText(getContext(),
+                                "decInt:" + emoji.getDecInt() + " drawableid" + emoji.getDrawableResId(),
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case image:
+                        String path = (String) emotionData;
+                        Toast.makeText(getContext(),
+                                "path:" + path,
+                                Toast.LENGTH_SHORT).show();
+                    default:
+                }
+            }
+
+            @Override
+            public void OnUniqueEmotionClick(Object uniqueItem, View v, EmotionData.EmotionCategory category) {
+                switch (category) {
+                    case emoji:
+                        Emoji emoji = (Emoji) uniqueItem;
+                        Toast.makeText(getContext(), "uniqueItem: " +
+                                        "decInt:" + emoji.getDecInt() + " drawableid" + emoji.getDrawableResId(),
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case image:
+                        String path = (String) uniqueItem;
+                        Toast.makeText(getContext(), "uniqueItem: " +
+                                        "path:" + path,
+                                Toast.LENGTH_SHORT).show();
+
+                        String temp = ResourceUtil.getResourceUriString(getContext(), R.mipmap.ic_launcher);
+                        List<String> customList = emotionView.getEmotionDataList().get(1).getEmotionList();
+                        customList.add(temp);
+                        EmotionData<String> data = new EmotionData<String>(customList,
+                                ResourceUtil.getResourceUriString(getContext(), R.mipmap.ic_launcher),
+                                EmotionData.EmotionCategory.image, temp, 2, 4);
+
+                        emotionView.modifyEmotionDataList(data, 1);
+                    default:
+                }
+            }
+        });
 
         init();
         return rootView;
@@ -177,30 +256,6 @@ public class InputChat extends BaseFragment {
         editText = (EditText) buttonView.findViewById(R.id.id_edit);
         editText.setCursorVisible(true);
 
-//        emotionAdapter = new EmotionAdapter(getAppContext(), editText);
-        emotionViewPager.setAdapter(emotionAdapter);
-
-        emotionIndicator.setDotCount(emotionAdapter.getCount());
-        emotionIndicator.setDotHeight(DImenUtil.dip2px(getAppContext(), 5));
-        emotionIndicator.setDotWidth(DImenUtil.dip2px(getAppContext(), 5));
-        emotionIndicator.setDotMargin(DImenUtil.dip2px(getAppContext(), 10));
-        emotionIndicator.show();
-
-        emotionViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                emotionIndicator.setCurrentPosition(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
-
         initButtonListener();
     }
 
@@ -240,7 +295,7 @@ public class InputChat extends BaseFragment {
                     onlyView3.setChildView(send2toolBtn);
                 }
                 onlyView4.setChildView(editText);
-                boxView.setChildView(emotionLinearLayout);
+                boxView.setChildView(emotionView);
             }
         });
         emoji2chatBtn.setOnClickListener(new View.OnClickListener() {
@@ -477,7 +532,6 @@ public class InputChat extends BaseFragment {
 
     protected void startLocationChooser() {
     }
-
 
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {

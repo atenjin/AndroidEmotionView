@@ -1,208 +1,130 @@
 package com.king.chatview.widgets.emotion.adapter;
 
-import android.content.ContentResolver;
 import android.content.Context;
-import android.support.v4.view.PagerAdapter;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.king.chatview.R;
+import com.king.chatview.widgets.emotion.EmotionView;
+import com.king.chatview.widgets.emotion.data.EmotionData;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
- * Created by Administrator on 2015/11/11.
+ * Created by Administrator on 2015/11/13.
  */
-public class CustomEmotionAdapter extends PagerAdapter implements View.OnClickListener {
+public class CustomEmotionAdapter extends BaseEmotionAdapter<CustomEmotionAdapter.CustomEmotionListAdapter> {
+    /**
+     * 可能会添加uniqueItem至list的index为0的在该adapter操作的List副本
+     */
+    private List<String> customImgPathList;
+    private List<CustomEmotionListAdapter> pageAdapterList = new ArrayList<>();
 
-
-    public interface CustomEmotion {
-        void OnAddCustomEmotions();
-
-        void OnClickCustomEmotions(View v, String path);
+    public CustomEmotionAdapter(Context context, ViewPager viewPager, EmotionData<String> emotionData, EmotionView.EmotionClickListener emotionClickListener) {
+        super(context, viewPager, emotionData, emotionClickListener);
+        initData(emotionData);
     }
 
-    private enum StickCategory {
-        customAdd, custom
-    }
-
-    private CustomEmotion customEmotion;
-    private Context mContext;
-    private ViewPager emotionViewPager;
-    private List<String> customList;
-
-
-    private static final int ROW_COUNT = 2;
-    private static final int COLUMN_COUNT = 4;
-    private static final int P_COUNT = ROW_COUNT * COLUMN_COUNT;
-
-    private int mCount = 1;
-
-    private int size;
-    private int rate;
-
-    private ViewHolder mViewHolder;
-
-    public CustomEmotionAdapter(Context context, CustomEmotion customEmotion, ViewPager viewPager) {
-        this.mContext = context;
-        this.customEmotion = customEmotion;
-        this.emotionViewPager = viewPager;
-        initData();
-    }
-
-
-    private void initData() {
-        // custom from pref
-        customList = new ArrayList<>();
-//        customList.add();
-        String addImageUrl = this.getResourceUriString(mContext, R.mipmap.ic_launcher);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-        customList.add(addImageUrl);
-
-        // add pref image path
-
-        // calc page number
-        if (customList.size() % P_COUNT > 0) {
-            mCount = customList.size() / P_COUNT + 1;
+    private void initData(EmotionData<String> emotionData) {
+        if (emotionData.getUniqueItem() != null) {
+            customImgPathList = new ArrayList<>(emotionData.getEmotionList());
+            customImgPathList.add(0, emotionData.getUniqueItem());
         } else {
-            mCount = customList.size() / P_COUNT;
+            customImgPathList = emotionData.getEmotionList();
         }
-
-
-        DisplayMetrics dm = mContext.getResources().getDisplayMetrics();
-        size = dm.widthPixels / COLUMN_COUNT;
-        rate = (dm.widthPixels / (COLUMN_COUNT * 10 + 3));
-    }
-
-
-    @Override
-    public int getCount() {
-        return mCount;
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object) {
-        ViewHolder holder = (ViewHolder) object;
-        return view == holder.gridView;
-    }
+    protected int calcPageNumber(EmotionData emotionData, int pageCount) {
+        int listSize = emotionData.getEmotionList().size();
+        if (emotionData.getUniqueItem() != null)
+            listSize++;
 
-    @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        GridView gridView;
-        CustomEmotionListAdapter adapter;
-        ViewHolder holder;
-
-        if (mViewHolder == null) {
-            gridView = (GridView) LayoutInflater.from(mContext).inflate(R.layout.bx_emotion, null);
-            gridView.setScrollContainer(false);
-//            gridView.setPadding(this.rate * 2, this.rate * 2, this.rate * 2, 0);
-            // 横向间距
-//            gridView.setHorizontalSpacing(this.rate);
-
-            int viewPageHeight = View.MeasureSpec.getSize(emotionViewPager.getMeasuredHeight());
-            int verticalSpacing = viewPageHeight / ROW_COUNT - size;
-            if (verticalSpacing < 0)
-                verticalSpacing = 0;
-            // 纵向间距
-            gridView.setVerticalSpacing(verticalSpacing);
-            gridView.setMinimumHeight(viewPageHeight);
-
-            // 设置列数
-            gridView.setNumColumns(COLUMN_COUNT);
-            adapter = new CustomEmotionListAdapter();
-            holder = new ViewHolder();
-            holder.gridView = gridView;
-            holder.adapter = adapter;
-
-        } else {
-            gridView = this.mViewHolder.gridView;
-            adapter = this.mViewHolder.adapter;
-            holder = this.mViewHolder;
-            this.mViewHolder = null;
+        int pageNumber;
+        if (listSize % mPageCount > 0)
+            pageNumber = listSize / mPageCount + 1;
+        else {
+            pageNumber = listSize / mPageCount;
         }
+        return pageNumber;
+    }
 
-        int startP = position * 8;
-        int endP = (position + 1) * 8 > customList.size() ? customList.size() : (position + 1) * 8;
-        String[] list = customList.subList(startP, endP).toArray(new String[endP - startP]);
-        adapter.setData(list);
-        gridView.setAdapter(adapter);
-        container.addView(gridView);
-        return holder;
+    @NonNull
+    @Override
+    public GridView instantiateGridView() {
+        GridView gridView = (GridView) LayoutInflater.from(mContext).inflate(R.layout.bx_emotion, null);
+        gridView.setScrollContainer(false);
+        return gridView;
+    }
+
+    @NonNull
+    @Override
+    public CustomEmotionListAdapter createListAdapter(int currentPageNumber) {
+        CustomEmotionListAdapter adapter = new CustomEmotionListAdapter(currentPageNumber);
+        pageAdapterList.add(adapter);
+        return adapter;
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        this.mViewHolder = ((ViewHolder) object);
-        container.removeView(this.mViewHolder.gridView);
+    public CustomEmotionListAdapter bingData(CustomEmotionListAdapter listAdapter, int position) {
+        int startP = position * mPageCount;
+        int endP = (position + 1) * mPageCount > customImgPathList.size() ? customImgPathList.size() : (position + 1) * mPageCount;
+        String[] list = customImgPathList.subList(startP, endP).toArray(new String[endP - startP]);
+        listAdapter.setData(list);
+        return listAdapter;
+    }
+
+    @Override
+    public EmotionData<String> getEmotionData() {
+        return mEmotionData;
+    }
+
+    @Override
+    public void setEmotionData(EmotionData emotionData) {
+        List<String> list = emotionData.getEmotionList();
+        customImgPathList = new ArrayList<>(list);
+        customImgPathList.add(0, (String) emotionData.getUniqueItem());
+        notifyDataSetChanged();
+        for (CustomEmotionListAdapter adapter : pageAdapterList) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public void onClick(View v) {
-        Object path = v.getTag();
-        if (path != null && customEmotion != null) {
-            String pathString = (String) path;
-            if (pathString.equals(customList.get(0))) {
-                customEmotion.OnAddCustomEmotions();
-            } else {
-                customEmotion.OnClickCustomEmotions(v, pathString);
+        int index = (Integer) v.getTag(CustomEmotionAdapter.INDEX_TAG);
+        if (mEmotionClickListener != null) {
+            if (mEmotionData.getUniqueItem() != null) {
+                if (index == 0) {
+                    mEmotionClickListener.OnUniqueEmotionClick(mEmotionData.getUniqueItem(), v, mEmotionData.getCategory());
+                    return;
+                }
+                index--;
             }
+            mEmotionClickListener.OnEmotionClick(mEmotionData.getEmotionList().get(index), v, mEmotionData.getCategory());
         }
     }
 
-    public void setCustomEmotion(CustomEmotionAdapter.CustomEmotion customEmotion) {
-        this.customEmotion = customEmotion;
-    }
 
-    public CustomEmotionAdapter.CustomEmotion getCustomEmotion() {
-        return customEmotion;
-    }
-
-
-    private String getResourceUriString(Context context, int resource) {
-        return ContentResolver.SCHEME_ANDROID_RESOURCE + "://"
-                + context.getResources().getResourcePackageName(resource) + "/"
-                + context.getResources().getResourceTypeName(resource) + "/"
-                + context.getResources().getResourceEntryName(resource);
-    }
-
-    private class CustomEmotionListAdapter extends BaseAdapter {
-
+    class CustomEmotionListAdapter extends BaseEmotionAdapter.BaseListAdapter {
         private String[] pathList;
 
-        public CustomEmotionListAdapter() {
+        CustomEmotionListAdapter(int currentPageNumber) {
+            super(currentPageNumber);
         }
 
         public void setData(String[] pathList) {
             this.pathList = pathList;
+            notifyDataSetChanged();
         }
 
         @Override
@@ -226,28 +148,27 @@ public class CustomEmotionAdapter extends PagerAdapter implements View.OnClickLi
             if (pathList == null) {
                 return containerLayout;
             }
-            // tag 中保留了这张图片的路径
             if (pathList[position] != null) {
                 ImageButton img = new ImageButton(mContext);
                 img.setBackgroundResource(R.drawable.sticker_style);
-                containerLayout.setLayoutParams(new GridView.LayoutParams(size, size));
+                containerLayout.setLayoutParams(new GridView.LayoutParams(mSize, mSize));
                 containerLayout.setGravity(Gravity.CENTER);
                 RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                params.setMargins(size / 9, size / 9, size / 9, size / 9);
+                params.setMargins(mSize / 9, mSize / 9, mSize / 9, mSize / 9);
                 img.setLayoutParams(params);
                 img.setOnClickListener(CustomEmotionAdapter.this);
                 // 加载
                 Glide.with(mContext).load(pathList[position]).centerCrop().into(img);
-                img.setTag(pathList[position]);
+
+                // 因为特殊元素是直接插入到list的第一个位置上，所以这里不需要区分是否是特殊元素
+                int index = mCurrentPageNumber * mPageCount + position;
+                img.setTag(CustomEmotionAdapter.INDEX_TAG, index);
+
                 containerLayout.addView(img);
             }
             return containerLayout;
         }
     }
 
-    class ViewHolder {
-        GridView gridView;
-        CustomEmotionAdapter.CustomEmotionListAdapter adapter;
-    }
 }
