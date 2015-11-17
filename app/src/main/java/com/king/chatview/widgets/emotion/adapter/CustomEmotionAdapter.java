@@ -152,7 +152,7 @@ public class CustomEmotionAdapter extends BaseEmotionAdapter<CustomEmotionAdapte
                     Log.e(BaseEmotionAdapter.EMOTION_ADAPTER_TAG, "Emoticon 的 getUri 必须被实现");
                 }
                 // 对于ImageButton而言在GridView或者ListView中要不被ImageButton截获点击事件所需要的特殊设置
-                img.setFocusable(false);
+//                img.setFocusable(false);
 //                img.setFocusableInTouchMode(false);
                 img.setClickable(false);
 
