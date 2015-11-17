@@ -137,7 +137,7 @@ public class CustomEmotionAdapter extends BaseEmotionAdapter<CustomEmotionAdapte
                 return containerLayout;
             }
             if (emoticonArr[position] != null) {
-                ImageButton img = new ImageButton(mContext);
+                ImageView img = new ImageView(mContext);
                 img.setBackgroundResource(R.drawable.sticker_style);
                 containerLayout.setLayoutParams(new GridView.LayoutParams(mSize, mSize));
                 containerLayout.setGravity(Gravity.CENTER);
@@ -154,12 +154,12 @@ public class CustomEmotionAdapter extends BaseEmotionAdapter<CustomEmotionAdapte
                 // 对于ImageButton而言在GridView或者ListView中要不被ImageButton截获点击事件所需要的特殊设置
 //                img.setFocusable(false);
 //                img.setFocusableInTouchMode(false);
-                img.setClickable(false);
+//                img.setClickable(false);
 
                 containerLayout.addView(img);
             }
             // 对于ImageButton而言在GridView或者ListView中要不被ImageButton截获点击事件所需要的特殊设置
-            containerLayout.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+//            containerLayout.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
             return containerLayout;
         }
     }
