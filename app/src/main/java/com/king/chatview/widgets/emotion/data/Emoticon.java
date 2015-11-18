@@ -5,11 +5,19 @@ import android.net.Uri;
 /**
  * Created by Administrator on 2015/11/16.
  */
-public abstract class Emoticon {
-    public final static String UNIQUE_ITEM = "uniqueItem";
+public interface Emoticon {
 
-    public abstract int getResourceId();
-    public abstract String getImagePath();
-    public abstract Uri getUri();
-    public abstract String getDesc();
+    int getResourceId();
+
+    String getImagePath();
+
+    Uri getUri();
+
+    String getDesc();
+
+    EmoticonType getEmoticonType();
+
+    enum EmoticonType {
+        NORMAL, UNIQUE
+    }
 }

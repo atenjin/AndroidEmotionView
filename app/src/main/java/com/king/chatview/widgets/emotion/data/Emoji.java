@@ -5,7 +5,7 @@ import android.net.Uri;
 /**
  * Created by Administrator on 2015/11/15.
  */
-public class Emoji extends Emoticon {
+public class Emoji implements Emoticon {
     private int drawableResId;
     private int decInt;
 
@@ -32,5 +32,10 @@ public class Emoji extends Emoticon {
     @Override
     public String getDesc() {
         return new String(Character.toChars(decInt));
+    }
+
+    @Override
+    public EmoticonType getEmoticonType() {
+        return EmoticonType.NORMAL;
     }
 }

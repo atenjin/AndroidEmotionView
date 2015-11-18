@@ -5,12 +5,13 @@ import android.net.Uri;
 /**
  * Created by Administrator on 2015/11/16.
  */
-public class UniqueEmoji extends Emoticon{
+public class UniqueEmoji implements Emoticon {
 
-    private int resourseId;
+    private int resourceId;
     private String path;
-    public UniqueEmoji(int resourseId){
-        this.resourseId = resourseId;
+
+    public UniqueEmoji(int resourseId) {
+        this.resourceId = resourseId;
     }
 
     public UniqueEmoji(String path) {
@@ -19,7 +20,7 @@ public class UniqueEmoji extends Emoticon{
 
     @Override
     public int getResourceId() {
-        return resourseId;
+        return resourceId;
     }
 
     @Override
@@ -33,7 +34,12 @@ public class UniqueEmoji extends Emoticon{
     }
 
     @Override
-    public final String getDesc() {
-        return Emoticon.UNIQUE_ITEM;
+    public String getDesc() {
+        return path;
+    }
+
+    @Override
+    public EmoticonType getEmoticonType() {
+        return EmoticonType.UNIQUE;
     }
 }

@@ -195,7 +195,7 @@ public class InputChat extends BaseFragment {
                         customList.add(new CustomEmoji(temp));
                         EmotionData data = new EmotionData(customList,
                                 ResourceUtil.getResourceUriString(getContext(), R.mipmap.ic_launcher),
-                                EmotionData.EmotionCategory.image, new CustomEmoji(temp), 2, 4);
+                                EmotionData.EmotionCategory.image, new UniqueEmoji(temp), 2, 4);
 
                         emotionView.modifyEmotionDataList(data, 1);
                     default:

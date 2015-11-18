@@ -155,7 +155,6 @@ public class CustomEmotionAdapter extends BaseEmotionAdapter<CustomEmotionAdapte
 //                img.setFocusable(false);
 //                img.setFocusableInTouchMode(false);
 //                img.setClickable(false);
-
                 containerLayout.addView(img);
             }
             // 对于ImageButton而言在GridView或者ListView中要不被ImageButton截获点击事件所需要的特殊设置

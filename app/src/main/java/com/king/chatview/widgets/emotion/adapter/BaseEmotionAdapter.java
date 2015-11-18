@@ -164,7 +164,7 @@ public abstract class BaseEmotionAdapter<T extends BaseEmotionAdapter.BaseListAd
         if (mEmotionClickListener == null)
             return;
         Emoticon emoticon = (Emoticon) parent.getItemAtPosition(position);
-        if (emoticon.getDesc().equals(Emoticon.UNIQUE_ITEM)) {
+        if (emoticon.getEmoticonType() == Emoticon.EmoticonType.UNIQUE) {
             mEmotionClickListener.OnUniqueEmotionClick(mEmotionData.getUniqueItem(), view, mEmotionData.getCategory());
         } else {
             mEmotionClickListener.OnEmotionClick(emoticon, view, mEmotionData.getCategory());

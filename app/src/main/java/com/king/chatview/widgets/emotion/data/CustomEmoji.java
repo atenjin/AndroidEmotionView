@@ -5,7 +5,7 @@ import android.net.Uri;
 /**
  * Created by Administrator on 2015/11/16.
  */
-public class CustomEmoji extends Emoticon {
+public class CustomEmoji implements Emoticon {
     private String path;
 
     public CustomEmoji(String path) {
@@ -30,5 +30,10 @@ public class CustomEmoji extends Emoticon {
     @Override
     public String getDesc() {
         return path;
+    }
+
+    @Override
+    public EmoticonType getEmoticonType() {
+        return EmoticonType.NORMAL;
     }
 }
