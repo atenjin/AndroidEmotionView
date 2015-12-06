@@ -32,7 +32,6 @@ titles=(`echo "$1" | tr "," "\n"`)
 password1=$3
 password2=$4
 
-
 for title in "${titles[@]}"
 do
 	sed 's/android:label="[^"]*"/android:label="'"$title"'"/g' decode/AndroidManifest.xml > decode/AndroidManifest.xml.new
@@ -41,6 +40,7 @@ do
 	jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore ~/Desktop/$keystore -storepass $password1 -keypass $password2 app_${title}.apk $keystore
 	jarsigner -verify app_${title}.apk
 	zipalign -v 4 app_${title}.apk app_${title}-signed.apk
+	rm app_${title}.apk
 done
 
 
